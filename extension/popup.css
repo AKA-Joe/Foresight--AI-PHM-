@@ -1,0 +1,74 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.popup-root {
+  width: 320px;
+  padding: 14px;
+}
+
+.popup-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #00d4ff;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.field input,
+.field textarea {
+  background: #111827;
+  border: 1px solid #1e3a5f;
+  border-radius: 8px;
+  color: #e2e8f0;
+  padding: 8px 10px;
+  font-size: 12px;
+  outline: none;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: #00d4ff;
+}
+
+button {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background: #00d4ff;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 10px;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.status {
+  margin-top: 10px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #94a3b8;
+}
+
+.status[data-kind='success'] {
+  color: #22c55e;
+}
+
+.status[data-kind='error'] {
+  color: #ef4444;
+}

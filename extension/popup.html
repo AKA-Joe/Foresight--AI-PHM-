@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Predictive Maintenance Bridge</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="popup-root">
+      <div class="popup-title">预测性维护插件桥接</div>
+      <label class="field">
+        <span>Bridge Port</span>
+        <input id="port" type="text" value="17654" />
+      </label>
+      <label class="field">
+        <span>Bridge Token</span>
+        <input id="token" type="password" value="demo-bridge-token" />
+      </label>
+      <label class="field">
+        <span>备注（可选）</span>
+        <textarea id="note" rows="3" placeholder="例如：这段内容可能与当前预警有关"></textarea>
+      </label>
+      <button id="sendBtn">发送当前页面与选中文本</button>
+      <div id="status" class="status">等待发送...</div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
