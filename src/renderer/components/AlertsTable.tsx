@@ -41,7 +41,7 @@ export default function AlertsTable({ snapshot, onSelect }: Props) {
                     {levelLabel[alert.level]}
                   </span>
                 </td>
-                <td style={{ maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <td title={alert.title} style={{ maxWidth: 260, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden', lineHeight: '1.5', whiteSpace: 'normal' }}>
                   {alert.title}
                 </td>
                 <td>
@@ -49,12 +49,12 @@ export default function AlertsTable({ snapshot, onSelect }: Props) {
                     {alert.status === 'active' ? '待处理' : alert.status === 'acknowledged' ? '已确认' : '已关闭'}
                   </span>
                 </td>
-                <td style={{ color: '#64748b', fontSize: 11 }}>{new Date(alert.timestamp).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
+                <td style={{ color: 'var(--text-dimmed)', fontSize: 11, fontFamily: 'var(--font-mono)' }}>{new Date(alert.timestamp).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
               </tr>
             ))}
             {activeAlerts.length === 0 && (
               <tr>
-                <td colSpan={4} style={{ textAlign: 'center', color: '#64748b', padding: 16 }}>暂无活跃告警</td>
+                <td colSpan={4} style={{ textAlign: 'center', color: 'var(--text-dimmed)', padding: 16 }}>暂无活跃告警</td>
               </tr>
             )}
           </tbody>

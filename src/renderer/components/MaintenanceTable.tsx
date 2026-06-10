@@ -35,20 +35,20 @@ export default function MaintenanceTable({ snapshot }: Props) {
                     {typeLabel[item.type] || item.type}
                   </span>
                 </td>
-                <td style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 12 }}>
-                  {item.result.length > 30 ? item.result.slice(0, 30) + '…' : item.result}
+                <td title={item.result} style={{ maxWidth: 280, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden', lineHeight: '1.5', whiteSpace: 'normal' }}>
+                  {item.result}
                 </td>
                 <td>
                   <span className={`badge ${item.completedAt ? 'badge-closed' : 'badge-active'}`}>
                     {item.completedAt ? '已完成' : '进行中'}
                   </span>
                 </td>
-                <td style={{ color: '#94a3b8', fontSize: 12 }}>{item.operator}</td>
+                <td style={{ color: 'var(--text-secondary)', fontSize: 12 }}>{item.operator}</td>
               </tr>
             ))}
             {recent.length === 0 && (
               <tr>
-                <td colSpan={4} style={{ textAlign: 'center', color: '#64748b', padding: 16 }}>暂无维护记录</td>
+                <td colSpan={4} style={{ textAlign: 'center', color: 'var(--text-dimmed)', padding: 16 }}>暂无维护记录</td>
               </tr>
             )}
           </tbody>

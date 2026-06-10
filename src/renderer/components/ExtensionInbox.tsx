@@ -23,7 +23,7 @@ export default function ExtensionInbox({ events }: Props) {
           <div className="ext-item-title">{event.page.title || '未命名页面'}</div>
           <div className="ext-item-url">{event.page.url}</div>
           {event.note ? (
-            <div style={{ color: '#00d4ff', fontSize: 11, marginBottom: 6 }}>备注：{event.note}</div>
+            <div style={{ color: '#3b82f6', fontSize: 11, marginBottom: 6 }}>备注：{event.note}</div>
           ) : null}
           {event.selectedText ? <div className="ext-item-text">{event.selectedText}</div> : null}
           <div className="ext-item-time">

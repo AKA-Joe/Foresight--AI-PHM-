@@ -19,8 +19,8 @@ export default function RiskRankingChart({ snapshot, onSelect }: Props) {
         trigger: 'axis',
         axisPointer: { type: 'shadow' },
         textStyle: { fontSize: 11 },
-        backgroundColor: '#1a2235',
-        borderColor: '#1e3a5f',
+        backgroundColor: '#081428',
+        borderColor: '#0f2847',
         formatter: (params: { name: string; value: number; dataIndex: number }[]) => {
           const item = sorted[params[0].dataIndex];
           return `<div style="font-size:12px">
@@ -40,7 +40,7 @@ export default function RiskRankingChart({ snapshot, onSelect }: Props) {
       yAxis: {
         type: 'category',
         data: sorted.map((r) => r.name),
-        axisLabel: { color: '#94a3b8', fontSize: 11 },
+        axisLabel: { color: '#6b8ab5', fontSize: 11 },
         axisLine: { show: false },
         axisTick: { show: false },
       },
@@ -59,7 +59,7 @@ export default function RiskRankingChart({ snapshot, onSelect }: Props) {
             show: true,
             position: 'right',
             formatter: (params: { value: number }) => `${params.value}`,
-            color: '#94a3b8',
+            color: '#6b8ab5',
             fontSize: 10,
           },
         },

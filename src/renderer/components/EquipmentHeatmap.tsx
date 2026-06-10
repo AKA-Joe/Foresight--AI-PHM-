@@ -6,6 +6,12 @@ interface Props {
   snapshot: DashboardSnapshot;
 }
 
+function getBarColor(score: number): { start: string; end: string } {
+  if (score > 70) return { start: '#10b981', end: '#34d399' };
+  if (score > 40) return { start: '#f59e0b', end: '#fbbf24' };
+  return { start: '#ef4444', end: '#f87171' };
+}
+
 export default function EquipmentHeatmap({ snapshot }: Props) {
   const chartRef = useRef<HTMLDivElement>(null);
 
@@ -13,59 +19,81 @@ export default function EquipmentHeatmap({ snapshot }: Props) {
     if (!chartRef.current) return;
     const chart = echarts.init(chartRef.current);
 
-    const stationMap = new Map<string, { scores: number[]; count: number }>();
-    snapshot.stationHealth.forEach((sh) => {
-      const entry = stationMap.get(sh.stationId) || { scores: [], count: 0 };
-      entry.scores.push(sh.healthScore);
-      entry.count += 1;
-      stationMap.set(sh.stationId, entry);
-    });
-
     const sorted = [...snapshot.topRisks].sort((a, b) => a.healthScore - b.healthScore).slice(0, 8);
+
+    const names = sorted.map((r) => r.name);
+    const scores = sorted.map((r) => r.healthScore);
 
     chart.setOption({
       tooltip: {
-        trigger: 'item',
-        textStyle: { fontSize: 11 },
-        backgroundColor: '#1a2235',
-        borderColor: '#1e3a5f',
-        formatter: (params: { name: string; value: string }) => {
-          const item = sorted.find((r) => r.name === params.name);
-          if (!item) return `<b>${params.name}</b><br/>${params.value}`;
-          return `<b>${item.name}</b><br/>设备: ${item.deviceName}<br/>工位: ${item.stationId}<br/>健康评分: ${item.healthScore}<br/>风险等级: ${item.alertLevel}`;
+        trigger: 'axis',
+        axisPointer: { type: 'none' },
+        textStyle: { fontSize: 11, color: '#c0d4e8' },
+        backgroundColor: '#081428',
+        borderColor: '#0f2847',
+        formatter: (params: Array<{ name: string; value: number }>) => {
+          const item = sorted.find((r) => r.name === params[0].name);
+          if (!item) return `<b>${params[0].name}</b>: ${params[0].value}`;
+          return `<b>${item.name}</b><br/>设备: ${item.deviceName}<br/>工位: ${item.stationId}<br/>健康评分: <b>${item.healthScore}</b>/100<br/>风险等级: ${item.alertLevel === 'critical' ? '紧急' : item.alertLevel === 'warning' ? '预警' : '正常'}`;
         },
       },
-      grid: { left: 8, right: 8, top: 8, bottom: 8 },
-      xAxis: { show: false },
-      yAxis: { show: false },
+      grid: { left: 80, right: 50, top: 8, bottom: 8, containLabel: false },
+      xAxis: {
+        type: 'value',
+        max: 100,
+        show: false,
+      },
+      yAxis: {
+        type: 'category',
+        data: names,
+        inverse: true,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: {
+          color: '#6b8ab5',
+          fontSize: 11,
+          width: 70,
+          overflow: 'truncate',
+        },
+      },
       series: [
         {
-          type: 'treemap',
-          width: '100%',
-          height: '100%',
-          roam: false,
-          nodeClick: false,
-          data: sorted.map((r) => ({
-            name: r.name,
-            value: r.healthScore,
-            itemStyle: {
-              color: r.alertLevel === 'critical' ? '#ef4444' : r.alertLevel === 'warning' ? '#f59e0b' : r.alertLevel === 'info' ? '#3b82f6' : '#22c55e',
-            },
-          })),
+          type: 'bar',
+          data: scores.map((score, i) => {
+            const color = getBarColor(score);
+            return {
+              value: score,
+              itemStyle: {
+                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                  { offset: 0, color: color.start },
+                  { offset: 1, color: color.end },
+                ]),
+                borderRadius: [0, 12, 12, 0],
+              },
+            };
+          }),
+          barWidth: 14,
+          z: 2,
           label: {
             show: true,
-            formatter: (params: { name: string; value: string }) => `${params.name}\n${params.value}分`,
-            color: '#e2e8f0',
+            position: 'right',
+            formatter: '{c}',
+            color: '#c0d4e8',
             fontSize: 11,
+            fontFamily: 'Orbitron, JetBrains Mono, monospace',
+            fontWeight: 600,
           },
-          upperLabel: { show: false },
-          breadcrumb: { show: false },
-          levels: [
-            { colorSaturation: [0.3, 0.6], itemStyle: { borderColor: '#0a0f1e', borderWidth: 2, gapWidth: 2 } },
-          ],
+          showBackground: true,
+          backgroundStyle: {
+            color: 'rgba(59, 130, 246, 0.06)',
+            borderRadius: [0, 12, 12, 0],
+          },
         },
       ],
+      animationDuration: 800,
+      animationEasing: 'cubicOut',
     });
+
     const handleResize = () => chart.resize();
     window.addEventListener('resize', handleResize);
     return () => {

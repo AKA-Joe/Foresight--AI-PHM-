@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useAlgorithmSimulation } from './useAlgorithmSimulation';
 import PipelineStages from './PipelineStages';
 import ConfidenceGauge from './ConfidenceGauge';
+import DegradationChart from './DegradationChart';
 import MetricsGrid from './MetricsGrid';
+import AttentionHeatmap from './AttentionHeatmap';
 import AlgorithmLog from './AlgorithmLog';
 
 export default function AlgorithmPanel() {
@@ -27,6 +29,12 @@ export default function AlgorithmPanel() {
           </p>
         </div>
         <div className="algo-actions">
+          <div className="algo-status-indicator">
+            <span className={`algo-status-dot ${state.phase !== 'idle' && state.phase !== 'complete' ? 'running' : state.phase === 'complete' ? 'done' : ''}`} />
+            <span className="algo-status-text">
+              {state.phase === 'idle' ? '待机' : state.phase === 'complete' ? '完成' : '运行中'}
+            </span>
+          </div>
           {state.phase === 'idle' || state.phase === 'complete' ? (
             <button className="algo-start-btn" onClick={handleStart}>
               {state.phase === 'complete' ? '重新运行' : '启动引擎'}
@@ -55,18 +63,25 @@ export default function AlgorithmPanel() {
       {state.phase !== 'idle' && (
         <div className="algo-progress-bar">
           <div className="algo-progress-fill" style={{ width: `${state.progress}%` }} />
+          <span className="algo-progress-label">{state.progress.toFixed(0)}%</span>
         </div>
       )}
 
       <PipelineStages currentPhase={state.phase} progress={state.progress} />
 
       <div className="algo-body">
-        <div className="algo-charts-col">
+        <div className="algo-top-row">
           <ConfidenceGauge metrics={state.metrics} />
-          <MetricsGrid metrics={state.metrics} />
+          <DegradationChart history={state.history} />
         </div>
-        <div className="algo-log-col">
-          <AlgorithmLog logs={state.logs} />
+        <div className="algo-bottom-row">
+          <div className="algo-bottom-left">
+            <MetricsGrid metrics={state.metrics} />
+            <AttentionHeatmap weights={state.attentionWeights} isRunning={state.isRunning} />
+          </div>
+          <div className="algo-log-col">
+            <AlgorithmLog logs={state.logs} />
+          </div>
         </div>
       </div>
     </div>

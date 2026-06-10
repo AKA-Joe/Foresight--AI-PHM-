@@ -1,6 +1,6 @@
 {
   "name": "ai-predictive-maintenance-demo",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "非标设备 5G+AI 预测性维护演示平台 — Electron + LLM + 数字孪生 + 浏览器插件",
   "author": "AI青年特训营",
   "license": "MIT",
@@ -22,6 +22,7 @@
     "nanoid": "^5.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0",
     "zod": "^3.24.0"
   },
   "devDependencies": {
@@ -49,18 +50,24 @@
       {
         "from": "tools",
         "to": "tools",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "artifactName": "${productName}-${version}-Setup.${ext}"

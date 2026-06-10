@@ -14,14 +14,14 @@ export default function AlertDistributionChart({ snapshot }: Props) {
     const chart = echarts.init(chartRef.current);
     const total = snapshot.kpis.infoAlerts + snapshot.kpis.warningAlerts + snapshot.kpis.criticalAlerts;
     chart.setOption({
-      tooltip: { trigger: 'item', textStyle: { fontSize: 11 }, backgroundColor: '#1a2235', borderColor: '#1e3a5f' },
+      tooltip: { trigger: 'item', textStyle: { fontSize: 11 }, backgroundColor: '#081428', borderColor: '#0f2847' },
       series: [
         {
           type: 'pie',
           radius: ['42%', '68%'],
           avoidLabelOverlap: false,
-          label: { show: true, formatter: '{b}: {c}', color: '#94a3b8', fontSize: 11 },
-          labelLine: { lineStyle: { color: '#1e3a5f' } },
+          label: { show: true, formatter: '{b}: {c}', color: '#6b8ab5', fontSize: 11 },
+          labelLine: { lineStyle: { color: '#0f2847' } },
           data: [
             { value: snapshot.kpis.infoAlerts, name: '提示', itemStyle: { color: '#3b82f6' } },
             { value: snapshot.kpis.warningAlerts, name: '预警', itemStyle: { color: '#f59e0b' } },
@@ -37,7 +37,7 @@ export default function AlertDistributionChart({ snapshot }: Props) {
             top: 'center',
             style: {
               text: `${total}`,
-              fill: '#e2e8f0',
+              fill: '#c0d4e8',
               fontSize: 22,
               fontWeight: 700,
             },

@@ -1,12 +1,23 @@
 import { useState, useCallback, useRef } from 'react';
 import type { AlgorithmPhase, AlgorithmMetrics } from '../../../shared/types';
 
+export interface MetricsSnapshot {
+  iteration: number;
+  rul: number;
+  healthScore: number;
+  degradationRate: number;
+  confidence: number;
+  faultProbability: number;
+}
+
 export interface SimulationState {
   phase: AlgorithmPhase;
   metrics: AlgorithmMetrics;
   logs: string[];
   progress: number;
   isRunning: boolean;
+  history: MetricsSnapshot[];
+  attentionWeights: number[][];
 }
 
 const INITIAL_METRICS: AlgorithmMetrics = {
@@ -87,6 +98,8 @@ export function useAlgorithmSimulation() {
     logs: [],
     progress: 0,
     isRunning: false,
+    history: [],
+    attentionWeights: generateAttentionWeights(-1),
   });
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -106,9 +119,12 @@ export function useAlgorithmSimulation() {
       logs: [`${timestamp()} TADPE 引擎启动 — 时序感知自适应退化预测`],
       progress: 0,
       isRunning: true,
+      history: [],
+      attentionWeights: generateAttentionWeights(0),
     });
 
     let cumulativeDelay = 0;
+    let tickCounter = 0;
 
     PHASES.forEach((phaseInfo, phaseIdx) => {
       const phaseStart = cumulativeDelay;
@@ -120,6 +136,7 @@ export function useAlgorithmSimulation() {
           ...prev,
           phase: phaseInfo.key,
           logs: [...prev.logs, `${timestamp()} ▶ 阶段 ${phaseIdx + 1}/5：${phaseInfo.label}`],
+          attentionWeights: generateAttentionWeights(phaseIdx),
         }));
       }, phaseStart);
       timeoutRefs.current.push(tid1);
@@ -141,13 +158,24 @@ export function useAlgorithmSimulation() {
         const tickDelay = phaseStart + tick * TICK_INTERVAL;
         const localT = tick / ticks;
         const globalT = (phaseIdx + localT) / PHASES.length;
+        const currentTickCounter = tickCounter++;
 
         const tid = setTimeout(() => {
-          setState((prev) => ({
-            ...prev,
-            progress: globalT * 100,
-            metrics: computeMetrics(phaseIdx, localT, globalT),
-          }));
+          const metrics = computeMetrics(phaseIdx, localT, globalT);
+          setState((prev) => {
+            const next: SimulationState = { ...prev, progress: globalT * 100, metrics };
+            if (currentTickCounter % 3 === 0) {
+              next.history = [...prev.history, {
+                iteration: Math.round(lerp(0, 2048, globalT)),
+                rul: metrics.rul,
+                healthScore: metrics.healthScore,
+                degradationRate: metrics.degradationRate,
+                confidence: metrics.confidence,
+                faultProbability: metrics.faultProbability,
+              }];
+            }
+            return next;
+          });
         }, tickDelay);
         timeoutRefs.current.push(tid);
       }
@@ -185,6 +213,8 @@ export function useAlgorithmSimulation() {
       logs: [],
       progress: 0,
       isRunning: false,
+      history: [],
+      attentionWeights: generateAttentionWeights(-1),
     });
   }, [clearTimers]);
 
@@ -203,4 +233,17 @@ function computeMetrics(phaseIdx: number, localT: number, globalT: number): Algo
     iteration: Math.round(lerp(0, 2048, t)),
     maxIterations: 2048,
   };
+}
+
+function generateAttentionWeights(phaseIdx: number): number[][] {
+  const rows = 8;
+  const cols = 6;
+  return Array.from({ length: rows }, (_, r) =>
+    Array.from({ length: cols }, (_, c) => {
+      const diagonal = Math.exp(-Math.abs(r - c) * 0.4) * 0.7;
+      const phaseShift = Math.sin((r + c + phaseIdx * 2) * 0.5) * 0.15;
+      const noise = (Math.random() - 0.5) * 0.2;
+      return Math.max(0, Math.min(1, diagonal + phaseShift + noise + phaseIdx * 0.05));
+    })
+  );
 }

@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>科技蓝金风格 — 军工指挥中心配色方案预览</title>
+<!-- 引入字体：思源黑体(Noto Sans SC) + DIN Alternate/Orbitron 科技数字体 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    /* ===== 科技蓝金配色方案 ===== */
+    /* 深色背景层 */
+    --bg-void: #020810;
+    --bg-primary: #040d1a;
+    --bg-card: rgba(6, 18, 38, 0.85);
+    --bg-card-solid: #081428;
+    --bg-card-hover: rgba(12, 30, 58, 0.9);
+    --bg-elevated: rgba(15, 35, 65, 0.95);
+    /* 边框 — 蓝色系 */
+    --border-color: rgba(59, 130, 246, 0.15);
+    --border-active: rgba(59, 130, 246, 0.5);
+    --border-gold: rgba(245, 158, 11, 0.3);
+    /* 主色 — 科技蓝 */
+    --accent: #3b82f6;
+    --accent-dim: rgba(59, 130, 246, 0.1);
+    --accent-bright: #60a5fa;
+    /* 强调色 — 金/琥珀 */
+    --gold: #f59e0b;
+    --gold-dim: rgba(245, 158, 11, 0.1);
+    --gold-bright: #fbbf24;
+    /* 文字 */
+    --text-bright: #f0f6ff;
+    --text-primary: #c0d4e8;
+    --text-secondary: #6b8ab5;
+    --text-dimmed: #3d5a80;
+    /* 语义色 */
+    --level-normal: #10b981;
+    --level-info: #3b82f6;
+    --level-warning: #f59e0b;
+    --level-critical: #ef4444;
+    /* 阴影 — 蓝色辉光 */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 1px rgba(59, 130, 246, 0.1);
+    --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 2px rgba(59, 130, 246, 0.15);
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 4px rgba(59, 130, 246, 0.1);
+    --shadow-glow-blue: 0 0 20px rgba(59, 130, 246, 0.15);
+    --shadow-glow-gold: 0 0 20px rgba(245, 158, 11, 0.12);
+    /* 圆角 */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 10px;
+    /* 字体 — 三级字体体系 */
+    /* 中文正文：思源黑体，精致清晰 */
+    --font-sans: 'Noto Sans SC', 'HarmonyOS Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    /* 数据/KPI 数字：Orbitron — 硬朗科幻几何体，展厅冲击力 */
+    --font-data: 'Orbitron', 'DIN Alternate', 'DIN', var(--font-mono);
+    /* 等宽/代码/时间戳：JetBrains Mono */
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+    /* ===== 字号阶梯体系 ===== */
+    --fs-hero: 42px;       /* 大屏核心大数字 (健康度分数等) */
+    --fs-kpi: 34px;        /* KPI 卡片主数字 */
+    --fs-metric: 26px;     /* 二级指标数字 (网络指标等) */
+    --fs-stat: 22px;       /* 三级小卡片数字 */
+    --fs-title: 15px;      /* 页面标题 */
+    --fs-section: 13px;    /* 区块/图表标题 */
+    --fs-body: 13px;       /* 正文 */
+    --fs-label: 11px;      /* 标签/表头 */
+    --fs-caption: 10px;    /* 注释/辅助信息 */
+    --fs-micro: 9px;       /* 最小辅助文字 */
+    /* 渐变 */
+    --gradient-bg: radial-gradient(ellipse at 15% 0%, #0a1e3d 0%, #020810 60%);
+    --gradient-accent: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    --gradient-gold: linear-gradient(135deg, #f59e0b, #d97706);
+    --gradient-brand: linear-gradient(90deg, #3b82f6, #f59e0b);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+    background: var(--gradient-bg);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    padding: 0;
+    min-height: 100vh;
+  }
+
+  /* ===== 预览页面布局 ===== */
+  .preview-section {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  .preview-title {
+    font-size: 30px;
+    font-weight: 700;
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+  .preview-subtitle {
+    font-size: var(--fs-body);
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+  .section-label {
+    font-size: var(--fs-label);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 14px;
+    margin-top: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::before {
+    content: '';
+    width: 16px;
+    height: 2px;
+    background: var(--gradient-gold);
+    border-radius: 1px;
+  }
+
+  /* ===== 角标装饰 ===== */
+  .corner-decor {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+  }
+  .corner-decor::before, .corner-decor::after {
+    content: '';
+    position: absolute;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  .corner-decor.tl { top: 0; left: 0; }
+  .corner-decor.tl::before { width: 12px; height: 1px; top: 0; left: 0; }
+  .corner-decor.tl::after { width: 1px; height: 12px; top: 0; left: 0; }
+  .corner-decor.tr { top: 0; right: 0; }
+  .corner-decor.tr::before { width: 12px; height: 1px; top: 0; right: 0; }
+  .corner-decor.tr::after { width: 1px; height: 12px; top: 0; right: 0; }
+  .corner-decor.bl { bottom: 0; left: 0; }
+  .corner-decor.bl::before { width: 12px; height: 1px; bottom: 0; left: 0; }
+  .corner-decor.bl::after { width: 1px; height: 12px; bottom: 0; left: 0; }
+  .corner-decor.br { bottom: 0; right: 0; }
+  .corner-decor.br::before { width: 12px; height: 1px; bottom: 0; right: 0; }
+  .corner-decor.br::after { width: 1px; height: 12px; bottom: 0; right: 0; }
+
+  /* ===== 扫描线动画 ===== */
+  @keyframes scanline {
+    0% { top: -2px; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  @keyframes data-flow {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ===== Header 预览 ===== */
+  .demo-header {
+    background: rgba(4, 13, 26, 0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.25);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: var(--radius-lg);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .demo-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--gold), var(--accent), transparent);
+    opacity: 0.6;
+  }
+  .demo-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .demo-logo {
+    width: 32px; height: 32px;
+    border: 1.5px solid var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.3), inset 0 0 8px rgba(59, 130, 246, 0.1);
+  }
+  .demo-logo svg { width: 18px; height: 18px; }
+  .demo-header h1 {
+    font-size: var(--fs-title);
+    font-weight: 600;
+    color: var(--text-bright);
+    letter-spacing: 0.08em;
+  }
+  .demo-header .subtitle {
+    font-size: var(--fs-caption);
+    color: var(--text-dimmed);
+    letter-spacing: 0.1em;
+    font-weight: 300;
+  }
+  .version-badge {
+    font-size: var(--fs-caption);
+    font-weight: 700;
+    font-family: var(--font-mono);
+    background: var(--gold-dim);
+    color: var(--gold);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+  }
+  .demo-nav {
+    display: flex;
+    gap: 2px;
+    background: rgba(59, 130, 246, 0.06);
+    padding: 3px;
+    border-radius: 6px;
+    border: 1px solid rgba(59, 130, 246, 0.1);
+  }
+  .demo-nav-item {
+    padding: 6px 14px;
+    font-size: var(--fs-label);
+    font-weight: 500;
+    color: var(--text-dimmed);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.06em;
+  }
+  .demo-nav-item.active {
+    background: rgba(59, 130, 246, 0.15);
+    color: var(--accent-bright);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.2);
+    font-weight: 600;
+  }
+  .demo-header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 4px;
+    animation: pulse-glow 2s ease infinite;
+  }
+  .status-dot.online { background: var(--level-normal); box-shadow: 0 0 6px rgba(16, 185, 129, 0.5); }
+  .status-dot.offline { background: var(--level-critical); box-shadow: 0 0 6px rgba(239, 68, 68, 0.5); }
+  .status-text { font-size: var(--fs-label); color: var(--text-secondary); font-family: var(--font-mono); letter-spacing: 0.03em; }
+
+  /* ===== KPI 卡片 ===== */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(12px);
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gradient-accent);
+    opacity: 0.6;
+  }
+  .kpi-card:nth-child(1)::before { background: var(--accent); }
+  .kpi-card:nth-child(2)::before { background: var(--level-normal); }
+  .kpi-card:nth-child(3)::before { background: var(--gold); }
+  .kpi-card:nth-child(4)::before { background: var(--level-critical); }
+  .kpi-card:hover {
+    border-color: var(--border-active);
+    box-shadow: var(--shadow-glow-blue);
+    transform: translateY(-2px);
+  }
+  .kpi-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    border-radius: 0 0 4px 4px;
+    opacity: 0.5;
+  }
+  .kpi-card:nth-child(1)::after { background: var(--accent); box-shadow: 0 0 12px rgba(59,130,246,0.3); }
+  .kpi-card:nth-child(2)::after { background: var(--level-normal); box-shadow: 0 0 12px rgba(16,185,129,0.3); }
+  .kpi-card:nth-child(3)::after { background: var(--gold); box-shadow: 0 0 12px rgba(245,158,11,0.3); }
+  .kpi-card:nth-child(4)::after { background: var(--level-critical); box-shadow: 0 0 12px rgba(239,68,68,0.3); }
+  .kpi-label {
+    font-size: var(--fs-label);
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+  .kpi-value {
+    font-size: var(--fs-kpi);
+    font-weight: 700;
+    font-family: var(--font-data);
+    color: var(--gold-bright);
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 24px rgba(245, 158, 11, 0.35);
+    line-height: 1;
+  }
+  .kpi-value.blue { color: var(--accent-bright); text-shadow: 0 0 24px rgba(59, 130, 246, 0.35); }
+  .kpi-unit {
+    font-size: var(--fs-label);
+    font-weight: 400;
+    font-family: var(--font-sans);
+    color: var(--text-dimmed);
+    margin-left: 6px;
+    letter-spacing: 0.05em;
+  }
+  .kpi-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .kpi-trend {
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    font-family: var(--font-mono);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+  }
+  .kpi-trend.up {
+    color: var(--level-normal);
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+  .kpi-trend.down {
+    color: var(--level-critical);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+  .kpi-sub {
+    font-size: var(--fs-label);
+    color: var(--text-dimmed);
+    margin-top: 8px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+  }
+
+  /* ===== 图表卡片 ===== */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+  }
+  .chart-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 20px; right: 20px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.5;
+  }
+  /* 扫描线效果 */
+  .chart-card::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-bright), transparent);
+    opacity: 0;
+    animation: scanline 6s linear infinite;
+    pointer-events: none;
+  }
+  .chart-title {
+    font-size: var(--fs-section);
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .chart-title::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    background: var(--gold);
+    border-radius: 2px;
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
+  }
+  .chart-placeholder {
+    height: 160px;
+    background: rgba(4, 13, 26, 0.6);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(59, 130, 246, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ===== 表格卡片 ===== */
+  .table-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    backdrop-filter: blur(12px);
+    position: relative;
+  }
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .data-table th {
+    text-align: left;
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    color: var(--text-dimmed);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 8px 12px;
+    background: rgba(59, 130, 246, 0.05);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.12);
+  }
+  .data-table th:first-child { border-radius: 6px 0 0 0; }
+  .data-table th:last-child { border-radius: 0 6px 0 0; }
+  .data-table td {
+    font-size: var(--fs-body);
+    color: var(--text-primary);
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.06);
+    line-height: 1.5;
+  }
+  .data-table tr:hover td {
+    background: rgba(59, 130, 246, 0.04);
+  }
+  .badge {
+    display: inline-block;
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+  .badge-critical { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+  .badge-warning { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+  .badge-info { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+  .badge-normal { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+
+  /* ===== 右侧面板 (Chat) ===== */
+  .layout-with-panel {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .right-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+  }
+  .panel-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(59, 130, 246, 0.03);
+  }
+  .panel-tab {
+    flex: 1;
+    padding: 10px;
+    font-size: var(--fs-label);
+    font-weight: 500;
+    text-align: center;
+    color: var(--text-dimmed);
+    cursor: pointer;
+    transition: all 0.25s;
+    border-bottom: 2px solid transparent;
+    letter-spacing: 0.08em;
+  }
+  .panel-tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+    font-weight: 600;
+    background: var(--gold-dim);
+  }
+  .panel-content { padding: 16px; }
+  .chat-msg {
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    font-size: var(--fs-body);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+  .chat-msg.user {
+    background: rgba(59, 130, 246, 0.08);
+    border-left: 3px solid var(--accent);
+    color: var(--text-primary);
+  }
+  .chat-msg.assistant {
+    background: rgba(245, 158, 11, 0.05);
+    border-left: 3px solid var(--gold);
+    color: var(--text-primary);
+  }
+  .chat-hints {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .chat-hint {
+    padding: 8px 12px;
+    background: rgba(59, 130, 246, 0.04);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-label);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 0.03em;
+  }
+  .chat-hint:hover {
+    border-color: var(--accent);
+    color: var(--accent-bright);
+    background: var(--accent-dim);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.15);
+  }
+  .chat-input-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .chat-input {
+    flex: 1;
+    padding: 8px 12px;
+    background: rgba(4, 13, 26, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-body);
+    color: var(--text-primary);
+    outline: none;
+    font-family: var(--font-sans);
+    letter-spacing: 0.02em;
+  }
+  .chat-input:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(59, 130, 246, 0.2); }
+  .chat-send {
+    padding: 8px 16px;
+    background: var(--gradient-accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-label);
+    font-weight: 600;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+    letter-spacing: 0.08em;
+  }
+
+  /* ===== BigScreen 模拟 ===== */
+  .bigscreen-demo {
+    background: var(--bg-void);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 280px 1fr 280px;
+    gap: 16px;
+    min-height: 420px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border-color);
+    position: relative;
+  }
+  .bs-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    position: relative;
+    backdrop-filter: blur(12px);
+  }
+  .bs-panel-title {
+    font-size: var(--fs-label);
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+  .bs-panel-title::before {
+    content: '//';
+    color: var(--text-dimmed);
+    font-family: var(--font-mono);
+    font-size: 10px;
+  }
+  .bs-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(4, 13, 26, 0.7);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: hidden;
+  }
+  .bs-center::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(59,130,246,0.05) 0%, transparent 70%),
+      linear-gradient(0deg, rgba(59,130,246,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 30px 30px, 30px 30px;
+    pointer-events: none;
+  }
+  .bs-center-label {
+    color: var(--text-dimmed);
+    font-size: var(--fs-label);
+    position: absolute;
+    bottom: 16px;
+    z-index: 1;
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+  }
+  .bs-center-3d {
+    font-size: var(--fs-hero);
+    font-weight: 200;
+    font-family: var(--font-data);
+    color: var(--accent);
+    letter-spacing: 8px;
+    text-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+    z-index: 1;
+  }
+  /* BigScreen Stat Cards */
+  .bs-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .bs-stat-card {
+    background: rgba(4, 13, 26, 0.6);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    border-left: 3px solid;
+    border-top: 1px solid rgba(59, 130, 246, 0.08);
+    border-right: 1px solid rgba(59, 130, 246, 0.05);
+    border-bottom: 1px solid rgba(59, 130, 246, 0.05);
+    position: relative;
+  }
+  .bs-stat-card:nth-child(1) { border-left-color: var(--accent); }
+  .bs-stat-card:nth-child(2) { border-left-color: #8b5cf6; }
+  .bs-stat-card:nth-child(3) { border-left-color: var(--level-normal); }
+  .bs-stat-card:nth-child(4) { border-left-color: var(--gold); }
+  .bs-stat-label {
+    font-size: var(--fs-micro);
+    color: var(--text-dimmed);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+  }
+  .bs-stat-value {
+    font-size: var(--fs-stat);
+    font-weight: 700;
+    font-family: var(--font-data);
+    color: var(--text-bright);
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+  .bs-stat-unit {
+    font-size: var(--fs-caption);
+    color: var(--text-dimmed);
+    font-weight: 400;
+    font-family: var(--font-sans);
+    margin-left: 3px;
+    letter-spacing: 0.05em;
+  }
+  .bs-stat-bar {
+    margin-top: 6px;
+    height: 3px;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  /* 数据流动动画 */
+  .bs-stat-bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    background-size: 200% 100%;
+    animation: data-flow 3s linear infinite;
+  }
+  /* Alert list */
+  .bs-alert-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.06);
+    font-size: var(--fs-label);
+    transition: background 0.2s;
+  }
+  .bs-alert-item:hover { background: rgba(59, 130, 246, 0.04); }
+  .bs-alert-time {
+    color: var(--text-dimmed);
+    font-family: var(--font-mono);
+    font-size: var(--fs-caption);
+    width: 50px;
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+  }
+  .bs-alert-level {
+    font-size: var(--fs-caption);
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 3px;
+    min-width: 36px;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .bs-alert-msg {
+    color: var(--text-primary);
+    font-size: var(--fs-label);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* ===== 安全面板 ===== */
+  .security-demo { margin-bottom: 24px; }
+  .security-title {
+    font-size: 22px;
+    font-weight: 700;
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+  .security-subtitle {
+    font-size: var(--fs-body);
+    color: var(--text-dimmed);
+    margin-bottom: 16px;
+    line-height: 1.7;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+  }
+  .security-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .security-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    position: relative;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s;
+  }
+  .security-card:hover {
+    border-color: var(--border-active);
+    box-shadow: var(--shadow-glow-blue);
+  }
+  .security-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 16px; right: 16px;
+    height: 2px;
+    border-radius: 0 0 2px 2px;
+  }
+  .security-card:nth-child(1)::before { background: var(--gold); box-shadow: 0 0 8px rgba(245,158,11,0.3); }
+  .security-card:nth-child(2)::before { background: var(--level-normal); box-shadow: 0 0 8px rgba(16,185,129,0.3); }
+  .security-card:nth-child(3)::before { background: var(--accent); box-shadow: 0 0 8px rgba(59,130,246,0.3); }
+  .security-card-name {
+    font-size: var(--fs-body);
+    font-weight: 600;
+    color: var(--text-bright);
+    margin-bottom: 6px;
+    letter-spacing: 0.03em;
+  }
+  .security-card-desc {
+    font-size: var(--fs-label);
+    color: var(--text-dimmed);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* 网络指标行 */
+  .network-metrics-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .metric-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+  }
+  .metric-card::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 1px;
+    opacity: 0;
+    animation: scanline 8s linear infinite;
+    pointer-events: none;
+  }
+  .metric-card:nth-child(1)::after { background: linear-gradient(90deg, transparent, var(--accent-bright), transparent); }
+  .metric-card:nth-child(2)::after { background: linear-gradient(90deg, transparent, var(--gold-bright), transparent); }
+  .metric-card:nth-child(3)::after { background: linear-gradient(90deg, transparent, #34d399, transparent); }
+  .metric-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+  .metric-card-label {
+    font-size: var(--fs-label);
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .metric-card-value {
+    font-size: var(--fs-metric);
+    font-weight: 700;
+    font-family: var(--font-data);
+    color: var(--accent-bright);
+    text-shadow: 0 0 18px rgba(59, 130, 246, 0.3);
+    line-height: 1;
+  }
+  .metric-card-value.gold { color: var(--gold-bright); text-shadow: 0 0 18px rgba(245, 158, 11, 0.3); }
+  .metric-card-value.green { color: #34d399; text-shadow: 0 0 18px rgba(16, 185, 129, 0.3); }
+  .metric-card-unit {
+    font-size: var(--fs-label);
+    color: var(--text-dimmed);
+    margin-left: 3px;
+    font-family: var(--font-sans);
+    letter-spacing: 0.05em;
+  }
+  .metric-chart-area {
+    height: 60px;
+    background: rgba(4, 13, 26, 0.5);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(59, 130, 246, 0.06);
+  }
+  .metric-chart-area svg { width: 100%; height: 100%; }
+
+  /* 连接节点网格 */
+  .connection-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .connection-node {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s;
+  }
+  .connection-node:hover {
+    border-color: var(--border-active);
+    box-shadow: var(--shadow-glow-blue);
+  }
+  .node-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  .node-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    animation: pulse-glow 2s ease infinite;
+  }
+  .node-dot.online { background: var(--level-normal); box-shadow: 0 0 8px rgba(16,185,129,0.5); }
+  .node-dot.degraded { background: var(--gold); box-shadow: 0 0 8px rgba(245,158,11,0.5); }
+  .node-name {
+    font-size: var(--fs-label);
+    font-weight: 600;
+    color: var(--text-bright);
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
+  }
+  .node-type {
+    font-size: var(--fs-caption);
+    color: var(--text-dimmed);
+    margin-bottom: 6px;
+    letter-spacing: 0.05em;
+  }
+  .node-latency {
+    font-size: var(--fs-title);
+    font-weight: 700;
+    font-family: var(--font-data);
+    color: var(--accent-bright);
+    line-height: 1;
+  }
+  .node-latency-unit {
+    font-size: var(--fs-caption);
+    color: var(--text-dimmed);
+    font-family: var(--font-sans);
+  }
+
+  /* 设备健康柱状图 */
+  .health-bar-chart { padding: 12px 0; }
+  .health-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .health-bar-name {
+    width: 80px;
+    font-size: var(--fs-label);
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    text-align: right;
+    flex-shrink: 0;
+    letter-spacing: 0.03em;
+  }
+  .health-bar-track {
+    flex: 1;
+    height: 20px;
+    background: rgba(59, 130, 246, 0.06);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(59, 130, 246, 0.08);
+  }
+  .health-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    position: relative;
+    transition: width 0.6s ease;
+  }
+  .health-bar-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    background-size: 200% 100%;
+    animation: data-flow 4s linear infinite;
+  }
+  .health-bar-score {
+    width: 40px;
+    font-size: var(--fs-body);
+    font-weight: 700;
+    font-family: var(--font-data);
+    text-align: right;
+  }
+
+  /* ===== 色板 ===== */
+  .color-palette {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .color-swatch {
+    border-radius: var(--radius-sm);
+    padding: 20px 12px 8px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: #f0f6ff;
+    border: 1px solid rgba(59, 130, 246, 0.1);
+  }
+  .color-swatch .name {
+    font-size: var(--fs-label);
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  .color-swatch .hex {
+    font-size: var(--fs-caption);
+    font-family: var(--font-mono);
+    opacity: 0.6;
+  }
+
+  /* 对比 */
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  .comparison-box {
+    border-radius: var(--radius-lg);
+    padding: 20px;
+  }
+  .comparison-box h3 {
+    font-size: var(--fs-title);
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: 0.03em;
+  }
+  .comparison-box.old {
+    background: #0a0f1e;
+    color: #c8d6e5;
+    border: 1px solid rgba(0,180,255,0.12);
+  }
+  .comparison-box.new {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+  }
+</style>
+</head>
+<body>
+
+<div class="preview-section">
+  <div class="preview-title">科技蓝金风格 — 军工指挥中心配色方案预览</div>
+  <div class="preview-subtitle">深蓝底色 + 蓝色科技线条 + 金色琥珀强调 | 展厅级视觉冲击</div>
+
+  <!-- ===== 色板 ===== -->
+  <div class="section-label">核心色板</div>
+  <div class="color-palette">
+    <div class="color-swatch" style="background:#020810"><span class="name">Void 深底</span><span class="hex">#020810</span></div>
+    <div class="color-swatch" style="background:#040d1a"><span class="name">Primary 底色</span><span class="hex">#040d1a</span></div>
+    <div class="color-swatch" style="background:#081428"><span class="name">Card 卡片底</span><span class="hex">#081428</span></div>
+    <div class="color-swatch" style="background:#3b82f6"><span class="name">科技蓝 主色</span><span class="hex">#3b82f6</span></div>
+    <div class="color-swatch" style="background:#60a5fa"><span class="name">亮蓝 高亮</span><span class="hex">#60a5fa</span></div>
+    <div class="color-swatch" style="background:#f59e0b"><span class="name">琥珀金 强调</span><span class="hex">#f59e0b</span></div>
+    <div class="color-swatch" style="background:#fbbf24"><span class="name">亮金 数字</span><span class="hex">#fbbf24</span></div>
+    <div class="color-swatch" style="background:#10b981"><span class="name">正常 绿</span><span class="hex">#10b981</span></div>
+    <div class="color-swatch" style="background:#ef4444"><span class="name">紧急 红</span><span class="hex">#ef4444</span></div>
+  </div>
+
+  <!-- ===== 新旧对比 ===== -->
+  <div class="section-label">新旧对比</div>
+  <div class="comparison">
+    <div class="comparison-box old">
+      <h3 style="color:#00d4ff">旧：暗黑 + 青色 (Cyan)</h3>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <div style="width:24px;height:24px;border-radius:4px;background:#00d4ff;box-shadow:0 0 8px rgba(0,212,255,0.4)"></div>
+        <div style="width:24px;height:24px;border-radius:4px;background:#7b2cbf;box-shadow:0 0 8px rgba(123,44,191,0.3)"></div>
+        <div style="width:24px;height:24px;border-radius:4px;background:#00ffc3;box-shadow:0 0 8px rgba(0,255,195,0.3)"></div>
+      </div>
+      <div style="font-size:var(--fs-body);color:#8a9bb5">全黑 #03050b + 青色发光 + 毛玻璃</div>
+    </div>
+    <div class="comparison-box new">
+      <h3 style="background:linear-gradient(90deg,#3b82f6,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent">新：深蓝 + 金色 (Blue-Gold)</h3>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <div style="width:24px;height:24px;border-radius:4px;background:#3b82f6;box-shadow:0 0 8px rgba(59,130,246,0.4)"></div>
+        <div style="width:24px;height:24px;border-radius:4px;background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,0.4)"></div>
+        <div style="width:24px;height:24px;border-radius:4px;background:#1d4ed8;box-shadow:0 0 8px rgba(29,78,216,0.3)"></div>
+      </div>
+      <div style="font-size:var(--fs-body);color:var(--text-secondary)">深蓝 #040d1a + 蓝色科技线 + 金色数字</div>
+    </div>
+  </div>
+
+  <!-- ===== Header ===== -->
+  <div class="section-label">1. Header + 导航栏</div>
+  <div class="demo-header">
+    <div class="demo-header-left">
+      <div class="demo-logo">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="6" stroke="#3b82f6" stroke-width="1"/><circle cx="10" cy="10" r="3" stroke="#f59e0b" stroke-width="1"/><circle cx="10" cy="10" r="1" fill="#60a5fa"/></svg>
+      </div>
+      <div>
+        <h1>非标设备 5G+AI 预测性维护演示平台</h1>
+        <div class="subtitle">动作执行时间 · 动态阈值 · 告警闭环 · AI 运维助手</div>
+      </div>
+      <span class="version-badge">v1.0</span>
+    </div>
+    <div class="demo-nav">
+      <div class="demo-nav-item active">预测维护驾驶舱</div>
+      <div class="demo-nav-item">TADPE 引擎</div>
+      <div class="demo-nav-item">数字孪生大屏</div>
+      <div class="demo-nav-item">网络态势感知</div>
+    </div>
+    <div class="demo-header-right">
+      <span class="status-text"><span class="status-dot online"></span>LLM：qwen3-30b</span>
+      <span class="status-text"><span class="status-dot online"></span>桥接：7891</span>
+    </div>
+  </div>
+
+  <!-- ===== KPI 卡片 ===== -->
+  <div class="section-label">2. KPI 卡片 — 金色数字 + 蓝色辉光</div>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">在线设备数</div>
+      <div class="kpi-row">
+        <div class="kpi-value blue">47<span class="kpi-unit">台</span></div>
+        <span class="kpi-trend up">+2.3%</span>
+      </div>
+      <div class="kpi-sub">总计 50 台</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">平均健康评分</div>
+      <div class="kpi-row">
+        <div class="kpi-value">76<span class="kpi-unit">分</span></div>
+        <span class="kpi-trend up">+1.8%</span>
+      </div>
+      <div class="kpi-sub">满分 100</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">活跃告警</div>
+      <div class="kpi-row">
+        <div class="kpi-value">12<span class="kpi-unit">条</span></div>
+        <span class="kpi-trend down">-5.1%</span>
+      </div>
+      <div class="kpi-sub">紧急 3 · 预警 9</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">预测故障概率</div>
+      <div class="kpi-row">
+        <div class="kpi-value" style="color:#f87171;text-shadow:0 0 20px rgba(239,68,68,0.3)">67<span class="kpi-unit">%</span></div>
+        <span class="kpi-trend down">-1.2%</span>
+      </div>
+      <div class="kpi-sub">最高风险气缸</div>
+    </div>
+  </div>
+
+  <!-- ===== 图表 + Chat ===== -->
+  <div class="section-label">3. 图表区 + 右侧面板</div>
+  <div class="layout-with-panel">
+    <div>
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">告警分布</div>
+          <div class="chart-placeholder">
+            <svg viewBox="0 0 200 120" style="width:60%;height:80%">
+              <circle cx="100" cy="60" r="45" fill="none" stroke="#3b82f6" stroke-width="12" stroke-dasharray="90 190" opacity="0.9"/>
+              <circle cx="100" cy="60" r="45" fill="none" stroke="#f59e0b" stroke-width="12" stroke-dasharray="50 230" stroke-dashoffset="-90" opacity="0.9"/>
+              <circle cx="100" cy="60" r="45" fill="none" stroke="#ef4444" stroke-width="12" stroke-dasharray="30 250" stroke-dashoffset="-140" opacity="0.9"/>
+              <text x="100" y="56" text-anchor="middle" fill="#fbbf24" font-size="22" font-weight="700" font-family="monospace">12</text>
+              <text x="100" y="72" text-anchor="middle" fill="#3d5a80" font-size="9">活跃告警</text>
+            </svg>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">风险排行</div>
+          <div class="chart-placeholder">
+            <svg viewBox="0 0 240 120" style="width:85%;height:80%">
+              <defs>
+                <linearGradient id="br" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ef4444"/><stop offset="1" stop-color="#f87171"/></linearGradient>
+                <linearGradient id="bo" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f59e0b"/><stop offset="1" stop-color="#fbbf24"/></linearGradient>
+                <linearGradient id="bb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#60a5fa"/></linearGradient>
+                <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#10b981"/><stop offset="1" stop-color="#34d399"/></linearGradient>
+              </defs>
+              <rect x="60" y="10" width="155" height="16" rx="3" fill="rgba(59,130,246,0.06)" stroke="rgba(59,130,246,0.08)" stroke-width="0.5"/>
+              <rect x="60" y="10" width="48" height="16" rx="3" fill="url(#br)"/>
+              <text x="54" y="22" text-anchor="end" fill="#6b8ab5" font-size="9" font-family="monospace">CYL-07</text>
+              <text x="112" y="22" fill="#f87171" font-size="9" font-family="monospace" font-weight="700">31</text>
+
+              <rect x="60" y="34" width="155" height="16" rx="3" fill="rgba(59,130,246,0.06)"/>
+              <rect x="60" y="34" width="65" height="16" rx="3" fill="url(#bo)"/>
+              <text x="54" y="46" text-anchor="end" fill="#6b8ab5" font-size="9" font-family="monospace">CYL-12</text>
+              <text x="129" y="46" fill="#fbbf24" font-size="9" font-family="monospace" font-weight="700">42</text>
+
+              <rect x="60" y="58" width="155" height="16" rx="3" fill="rgba(59,130,246,0.06)"/>
+              <rect x="60" y="58" width="85" height="16" rx="3" fill="url(#bo)"/>
+              <text x="54" y="70" text-anchor="end" fill="#6b8ab5" font-size="9" font-family="monospace">CYL-03</text>
+              <text x="149" y="70" fill="#fbbf24" font-size="9" font-family="monospace" font-weight="700">55</text>
+
+              <rect x="60" y="82" width="155" height="16" rx="3" fill="rgba(59,130,246,0.06)"/>
+              <rect x="60" y="82" width="112" height="16" rx="3" fill="url(#bb)"/>
+              <text x="54" y="94" text-anchor="end" fill="#6b8ab5" font-size="9" font-family="monospace">CYL-19</text>
+              <text x="176" y="94" fill="#60a5fa" font-size="9" font-family="monospace" font-weight="700">72</text>
+
+              <rect x="60" y="106" width="155" height="16" rx="3" fill="rgba(59,130,246,0.06)"/>
+              <rect x="60" y="106" width="136" height="16" rx="3" fill="url(#bg)"/>
+              <text x="54" y="118" text-anchor="end" fill="#6b8ab5" font-size="9" font-family="monospace">CYL-01</text>
+              <text x="200" y="118" fill="#34d399" font-size="9" font-family="monospace" font-weight="700">88</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="panel-tabs">
+        <div class="panel-tab active">AI 运维助手</div>
+        <div class="panel-tab">插件收件箱</div>
+      </div>
+      <div class="panel-content">
+        <div class="chat-msg user">请分析当前最高风险气缸，并给出维修建议。</div>
+        <div class="chat-msg assistant">CYL-07 健康评分 31/100，动作执行时间持续上升，退化斜率 +0.23ms/hr。建议 5 天内安排密封圈检查和气源压力校准。</div>
+        <div class="chat-hints">
+          <div class="chat-hint">请分析当前最高风险气缸，并给出维修建议。</div>
+          <div class="chat-hint">请解释当前告警规则和触发原因。</div>
+          <div class="chat-hint">请分析设备整体健康趋势和预防建议。</div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input" placeholder="输入问题..." />
+          <button class="chat-send">发送</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 表格 ===== -->
+  <div class="section-label">4. 表格 — 内容完整显示</div>
+  <div class="charts-grid">
+    <div class="table-card">
+      <div class="chart-title">活跃告警</div>
+      <table class="data-table">
+        <thead><tr><th>等级</th><th>告警标题</th><th>状态</th><th>时间</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-critical">紧急</span></td>
+            <td style="line-height:1.5">CYL-07 动作执行时间超出固定阈值 120ms，连续 3 次触发紧急告警</td>
+            <td><span class="badge badge-warning">待处理</span></td>
+            <td style="color:var(--text-dimmed);font-size:var(--fs-label);font-family:var(--font-mono)">06/10 14:32</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-warning">预警</span></td>
+            <td style="line-height:1.5">CYL-12 退化趋势斜率异常，预测 RUL 低于安全阈值</td>
+            <td><span class="badge badge-info">已确认</span></td>
+            <td style="color:var(--text-dimmed);font-size:var(--fs-label);font-family:var(--font-mono)">06/10 13:15</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-card">
+      <div class="chart-title">最近维护记录</div>
+      <table class="data-table">
+        <thead><tr><th>类型</th><th>维护内容</th><th>状态</th><th>操作人</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-info">计划点检</span></td>
+            <td style="line-height:1.5">检查密封圈磨损程度，测量气缸动作执行时间基线，校准气源压力</td>
+            <td><span class="badge badge-normal">已完成</span></td>
+            <td style="color:var(--text-secondary);font-size:var(--fs-body)">张工</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-info">润滑保养</span></td>
+            <td style="line-height:1.5">导轨润滑保养完成，动作时间恢复至基线水平</td>
+            <td><span class="badge badge-normal">已完成</span></td>
+            <td style="color:var(--text-secondary);font-size:var(--fs-body)">李工</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== BigScreen ===== -->
+  <div class="section-label">5. 数字孪生大屏</div>
+  <div class="bigscreen-demo">
+    <div>
+      <div class="bs-panel">
+        <div class="bs-panel-title">数据流量</div>
+        <div style="height:80px;background:rgba(4,13,26,0.6);border-radius:6px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(59,130,246,0.08)">
+          <svg viewBox="0 0 200 60" style="width:80%;height:80%">
+            <defs>
+              <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b82f6" stop-opacity="0.35"/><stop offset="1" stop-color="#3b82f6" stop-opacity="0"/></linearGradient>
+            </defs>
+            <polyline points="0,40 20,35 40,38 60,20 80,25 100,15 120,28 140,22 160,30 180,18 200,25" fill="none" stroke="#3b82f6" stroke-width="2"/>
+            <polygon points="0,40 20,35 40,38 60,20 80,25 100,15 120,28 140,22 160,30 180,18 200,25 200,60 0,60" fill="url(#tg)"/>
+          </svg>
+        </div>
+        <div class="bs-stats-grid">
+          <div class="bs-stat-card">
+            <div class="bs-stat-label">在线设备</div>
+            <div class="bs-stat-value">47<span class="bs-stat-unit">台</span></div>
+            <div class="bs-stat-bar" style="width:94%;background:var(--accent)"></div>
+          </div>
+          <div class="bs-stat-card">
+            <div class="bs-stat-label">5G 基站</div>
+            <div class="bs-stat-value">8<span class="bs-stat-unit">个</span></div>
+            <div class="bs-stat-bar" style="width:80%;background:#8b5cf6"></div>
+          </div>
+          <div class="bs-stat-card">
+            <div class="bs-stat-label">数据吞吐</div>
+            <div class="bs-stat-value">2.4<span class="bs-stat-unit">GB/s</span></div>
+            <div class="bs-stat-bar" style="width:60%;background:var(--level-normal)"></div>
+          </div>
+          <div class="bs-stat-card">
+            <div class="bs-stat-label">平均延迟</div>
+            <div class="bs-stat-value">4.2<span class="bs-stat-unit">ms</span></div>
+            <div class="bs-stat-bar" style="width:42%;background:var(--gold)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bs-center">
+      <div class="bs-center-3d">3D</div>
+      <div class="bs-center-label">// NETWORK TOPOLOGY / 3D BAR / SCATTER</div>
+    </div>
+    <div>
+      <div class="bs-panel" style="margin-bottom:12px">
+        <div class="bs-panel-title">资产健康度</div>
+        <div style="text-align:center;margin:12px 0">
+          <span style="font-size:var(--fs-hero);font-weight:700;font-family:var(--font-data);color:var(--gold-bright);text-shadow:0 0 30px rgba(245,158,11,0.35);letter-spacing:0.02em">76</span>
+          <span style="font-size:14px;color:var(--text-dimmed);font-family:var(--font-sans);font-weight:300;letter-spacing:0.1em">/100</span>
+        </div>
+      </div>
+      <div class="bs-panel">
+        <div class="bs-panel-title">实时告警事件</div>
+        <div class="bs-alert-item" style="border-left:2px solid #ef4444">
+          <span class="bs-alert-time">14:32</span>
+          <span class="bs-alert-level badge-critical">紧急</span>
+          <span class="bs-alert-msg">CYL-07 执行时间超阈值</span>
+        </div>
+        <div class="bs-alert-item">
+          <span class="bs-alert-time">14:28</span>
+          <span class="bs-alert-level badge-warning">预警</span>
+          <span class="bs-alert-msg">CYL-12 退化趋势异常</span>
+        </div>
+        <div class="bs-alert-item">
+          <span class="bs-alert-time">14:15</span>
+          <span class="bs-alert-level badge-info">提示</span>
+          <span class="bs-alert-msg">CYL-03 接近动态阈值</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 设备健康 ===== -->
+  <div class="section-label">6. 设备健康概览</div>
+  <div class="chart-card" style="max-width:640px">
+    <div class="chart-title">设备健康概览</div>
+    <div class="health-bar-chart">
+      <div class="health-bar-row">
+        <span class="health-bar-name">CYL-07</span>
+        <div class="health-bar-track"><div class="health-bar-fill" style="width:31%;background:linear-gradient(90deg,#ef4444,#f87171)"></div></div>
+        <span class="health-bar-score" style="color:#f87171">31</span>
+      </div>
+      <div class="health-bar-row">
+        <span class="health-bar-name">CYL-12</span>
+        <div class="health-bar-track"><div class="health-bar-fill" style="width:42%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div></div>
+        <span class="health-bar-score" style="color:#fbbf24">42</span>
+      </div>
+      <div class="health-bar-row">
+        <span class="health-bar-name">CYL-03</span>
+        <div class="health-bar-track"><div class="health-bar-fill" style="width:55%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div></div>
+        <span class="health-bar-score" style="color:#fbbf24">55</span>
+      </div>
+      <div class="health-bar-row">
+        <span class="health-bar-name">CYL-19</span>
+        <div class="health-bar-track"><div class="health-bar-fill" style="width:72%;background:linear-gradient(90deg,#3b82f6,#60a5fa)"></div></div>
+        <span class="health-bar-score" style="color:#60a5fa">72</span>
+      </div>
+      <div class="health-bar-row">
+        <span class="health-bar-name">CYL-01</span>
+        <div class="health-bar-track"><div class="health-bar-fill" style="width:88%;background:linear-gradient(90deg,#10b981,#34d399)"></div></div>
+        <span class="health-bar-score" style="color:#34d399">88</span>
+      </div>
+      <div class="health-bar-row">
+        <span class="health-bar-name">CYL-15</span>
+        <div class="health-bar-track"><div class="health-bar-fill" style="width:93%;background:linear-gradient(90deg,#10b981,#34d399)"></div></div>
+        <span class="health-bar-score" style="color:#34d399">93</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 网络态势感知 ===== -->
+  <div class="section-label">7. 网络态势感知 — 实时可视化</div>
+  <div class="security-demo">
+    <div class="security-title">5G 工业网络态势感知</div>
+    <div class="security-subtitle">确保设备侧到分析平台的数据链路安全、可用、可信</div>
+
+    <div class="network-metrics-row">
+      <div class="metric-card">
+        <div class="metric-card-header">
+          <span class="metric-card-label">网络延迟</span>
+          <div><span class="metric-card-value">3.2</span><span class="metric-card-unit">ms</span></div>
+        </div>
+        <div class="metric-chart-area">
+          <svg viewBox="0 0 200 60" preserveAspectRatio="none">
+            <defs><linearGradient id="ml" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b82f6" stop-opacity="0.4"/><stop offset="1" stop-color="#3b82f6" stop-opacity="0"/></linearGradient></defs>
+            <polygon points="0,35 10,30 20,32 30,28 40,33 50,25 60,30 70,22 80,28 90,20 100,25 110,18 120,22 130,26 140,20 150,24 160,18 170,22 180,16 190,20 200,22 200,60 0,60" fill="url(#ml)"/>
+            <polyline points="0,35 10,30 20,32 30,28 40,33 50,25 60,30 70,22 80,28 90,20 100,25 110,18 120,22 130,26 140,20 150,24 160,18 170,22 180,16 190,20 200,22" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-card-header">
+          <span class="metric-card-label">丢包率</span>
+          <div><span class="metric-card-value gold">0.12</span><span class="metric-card-unit">%</span></div>
+        </div>
+        <div class="metric-chart-area">
+          <svg viewBox="0 0 200 60" preserveAspectRatio="none">
+            <defs><linearGradient id="mo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f59e0b" stop-opacity="0.4"/><stop offset="1" stop-color="#f59e0b" stop-opacity="0"/></linearGradient></defs>
+            <polygon points="0,50 20,48 40,45 60,50 80,42 100,48 120,40 140,45 160,38 180,42 200,45 200,60 0,60" fill="url(#mo)"/>
+            <polyline points="0,50 20,48 40,45 60,50 80,42 100,48 120,40 140,45 160,38 180,42 200,45" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-card-header">
+          <span class="metric-card-label">数据吞吐</span>
+          <div><span class="metric-card-value green">847</span><span class="metric-card-unit">Mbps</span></div>
+        </div>
+        <div class="metric-chart-area">
+          <svg viewBox="0 0 200 60" preserveAspectRatio="none">
+            <defs><linearGradient id="mg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#10b981" stop-opacity="0.4"/><stop offset="1" stop-color="#10b981" stop-opacity="0"/></linearGradient></defs>
+            <polygon points="0,30 20,25 40,28 60,20 80,22 100,18 120,15 140,20 160,12 180,15 200,10 200,60 0,60" fill="url(#mg)"/>
+            <polyline points="0,30 20,25 40,28 60,20 80,22 100,18 120,15 140,20 160,12 180,15 200,10" fill="none" stroke="#10b981" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="connection-grid">
+      <div class="connection-node">
+        <div class="node-header"><div class="node-dot online"></div><span class="node-name">MEC-01</span></div>
+        <div class="node-type">边缘计算节点</div>
+        <div class="node-latency">2.1<span class="node-latency-unit">ms</span></div>
+      </div>
+      <div class="connection-node">
+        <div class="node-header"><div class="node-dot online"></div><span class="node-name">MEC-02</span></div>
+        <div class="node-type">边缘计算节点</div>
+        <div class="node-latency">1.8<span class="node-latency-unit">ms</span></div>
+      </div>
+      <div class="connection-node">
+        <div class="node-header"><div class="node-dot degraded"></div><span class="node-name">GW-INDL</span></div>
+        <div class="node-type">工业网关</div>
+        <div class="node-latency" style="color:var(--gold-bright)">5.4<span class="node-latency-unit">ms</span></div>
+      </div>
+      <div class="connection-node">
+        <div class="node-header"><div class="node-dot online"></div><span class="node-name">5G-gNB-03</span></div>
+        <div class="node-type">5G 基站</div>
+        <div class="node-latency">3.2<span class="node-latency-unit">ms</span></div>
+      </div>
+    </div>
+
+    <div class="security-cards">
+      <div class="security-card">
+        <div class="security-card-name">边缘节点端口巡检</div>
+        <div class="security-card-desc">扫描 MEC 节点与工业网关端口暴露面，识别未授权服务</div>
+      </div>
+      <div class="security-card">
+        <div class="security-card-name">网络拓扑态势侦测</div>
+        <div class="security-card-desc">验证 5G 边缘基础设施可达性、DNS 健康度与路由完整性</div>
+      </div>
+      <div class="security-card">
+        <div class="security-card-name">数据通道安全评级</div>
+        <div class="security-card-desc">评估 OT 数据通道 TLS 证书有效性与整体防护等级</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

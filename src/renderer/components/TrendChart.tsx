@@ -31,14 +31,14 @@ export default function TrendChart({ snapshot, selectedCylinderUid, cylinders, r
 
     const chart = echarts.init(chartRef.current);
     chart.setOption({
-      tooltip: { trigger: 'axis', textStyle: { fontSize: 11 }, backgroundColor: '#1a2235', borderColor: '#1e3a5f' },
-      legend: { textStyle: { color: '#94a3b8', fontSize: 11 }, bottom: 0, icon: 'roundRect', itemWidth: 12, itemHeight: 3 },
+      tooltip: { trigger: 'axis', textStyle: { fontSize: 11 }, backgroundColor: '#081428', borderColor: '#0f2847' },
+      legend: { textStyle: { color: '#6b8ab5', fontSize: 11 }, bottom: 0, icon: 'roundRect', itemWidth: 12, itemHeight: 3 },
       grid: { left: 50, right: 16, top: 12, bottom: 36 },
       xAxis: {
         type: 'category',
         data: times,
         axisLabel: { color: '#64748b', fontSize: 10, rotate: 30 },
-        axisLine: { lineStyle: { color: '#1e3a5f' } },
+        axisLine: { lineStyle: { color: '#0f2847' } },
         axisTick: { show: false },
         splitLine: { show: false },
       },
@@ -47,7 +47,7 @@ export default function TrendChart({ snapshot, selectedCylinderUid, cylinders, r
         name: '执行时间 (ms)',
         nameTextStyle: { color: '#64748b', fontSize: 10 },
         axisLabel: { color: '#64748b', fontSize: 10 },
-        splitLine: { lineStyle: { color: 'rgba(30,58,95,0.3)' } },
+        splitLine: { lineStyle: { color: 'rgba(59,130,246,0.08)' } },
       },
       series: [
         {
@@ -57,15 +57,15 @@ export default function TrendChart({ snapshot, selectedCylinderUid, cylinders, r
           smooth: true,
           symbol: 'circle',
           symbolSize: 3,
-          lineStyle: { color: '#00d4ff', width: 1.5 },
-          areaStyle: { color: 'rgba(0,212,255,0.08)' },
+          lineStyle: { color: '#3b82f6', width: 1.5 },
+          areaStyle: { color: 'rgba(59,130,246,0.08)' },
           itemStyle: {
             color: (params: { dataIndex: number }) => {
               const r = cRecords[params.dataIndex];
-              if (!r) return '#00d4ff';
+              if (!r) return '#3b82f6';
               if (r.executionTimeMs >= cylinder.fixedThresholdMs) return '#ef4444';
               if (r.executionTimeMs >= r.dynamicUpperMs) return '#f59e0b';
-              return '#00d4ff';
+              return '#3b82f6';
             },
           },
         },

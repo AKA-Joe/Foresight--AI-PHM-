@@ -88,11 +88,18 @@ export default function App() {
     <div className={`app-container ${isFullscreen ? 'fullscreen-mode' : ''}`}>
       <header className={`header ${isFullscreen ? 'header-hidden' : ''}`}>
         <div className="header-title">
-          <span className="logo-icon">⚙️</span>
+          <svg className="logo-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="8" stroke="#3b82f6" strokeWidth="1.5" opacity="0.6" />
+            <circle cx="10" cy="10" r="4" stroke="#f59e0b" strokeWidth="1.5" />
+            <circle cx="10" cy="10" r="1.5" fill="#60a5fa">
+              <animate attributeName="opacity" values="1;0.4;1" dur="2.5s" repeatCount="indefinite" />
+            </circle>
+          </svg>
           <div>
             <h1>非标设备 5G+AI 预测性维护演示平台</h1>
             <div className="subtitle">动作执行时间 · 动态阈值 · 告警闭环 · AI 运维助手</div>
           </div>
+          <span className="version-badge">v1.0</span>
         </div>
         <NavBar current={currentView} onChange={setCurrentView} isFullscreen={isFullscreen} />
         <div className="header-right">
@@ -107,7 +114,11 @@ export default function App() {
             </div>
           </div>
           <button className="fullscreen-btn" onClick={toggleFullscreen} title={isFullscreen ? '退出全屏' : '全屏'}>
-            {isFullscreen ? '⊡' : '⛶'}
+            {isFullscreen ? (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M5 1H1v4M9 1h4v4M5 13H1V9M9 13h4V9"/></svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1 5V1h4M13 5V1H9M1 9v4h4M13 9v4H9"/></svg>
+            )}
           </button>
           <HudClock />
         </div>
@@ -136,20 +147,23 @@ export default function App() {
                 <EquipmentHeatmap snapshot={snapshot} />
                 <div className="chart-card">
                   <div className="chart-title">当前选中气缸</div>
-                  <div style={{ padding: '8px 4px', lineHeight: 1.8, fontSize: 12 }}>
+                  <div className="cylinder-detail">
                     {selectedCylinder ? (
                       <>
-                        <div><strong>{selectedCylinder.name}</strong></div>
-                        <div style={{ color: '#94a3b8' }}>气缸 UID：{selectedCylinder.uid}</div>
-                        <div style={{ color: '#94a3b8' }}>设备：{selectedCylinder.deviceName}</div>
-                        <div style={{ color: '#94a3b8' }}>工位：{selectedCylinder.stationId}</div>
-                        <div style={{ color: '#94a3b8' }}>基线：{selectedCylinder.baselineMs} ms</div>
-                        <div style={{ color: '#94a3b8' }}>固定阈值：{selectedCylinder.fixedThresholdMs} ms</div>
-                        <div style={{ color: '#94a3b8' }}>健康评分：{selectedCylinder.healthScore}/100</div>
-                        <div style={{ color: '#94a3b8' }}>故障概率：{selectedCylinder.faultProbability}%</div>
+                        <div className="cylinder-detail-name">
+                          <span className={`cylinder-detail-dot ${selectedCylinder.healthScore > 70 ? 'dot-normal' : selectedCylinder.healthScore > 40 ? 'dot-warning' : 'dot-critical'}`} />
+                          {selectedCylinder.name}
+                        </div>
+                        <div className="cylinder-detail-row"><span className="cylinder-detail-label">气缸 UID</span><span className="cylinder-detail-value">{selectedCylinder.uid}</span></div>
+                        <div className="cylinder-detail-row"><span className="cylinder-detail-label">设备</span><span className="cylinder-detail-value">{selectedCylinder.deviceName}</span></div>
+                        <div className="cylinder-detail-row"><span className="cylinder-detail-label">工位</span><span className="cylinder-detail-value">{selectedCylinder.stationId}</span></div>
+                        <div className="cylinder-detail-row"><span className="cylinder-detail-label">基线</span><span className="cylinder-detail-value">{selectedCylinder.baselineMs} ms</span></div>
+                        <div className="cylinder-detail-row"><span className="cylinder-detail-label">固定阈值</span><span className="cylinder-detail-value">{selectedCylinder.fixedThresholdMs} ms</span></div>
+                        <div className="cylinder-detail-row"><span className="cylinder-detail-label">健康评分</span><span className={`cylinder-detail-value ${selectedCylinder.healthScore > 70 ? 'val-normal' : selectedCylinder.healthScore > 40 ? 'val-warning' : 'val-critical'}`}>{selectedCylinder.healthScore}/100</span></div>
+                        <div className="cylinder-detail-row"><span className="cylinder-detail-label">故障概率</span><span className={`cylinder-detail-value ${selectedCylinder.faultProbability < 30 ? 'val-normal' : selectedCylinder.faultProbability < 60 ? 'val-warning' : 'val-critical'}`}>{selectedCylinder.faultProbability}%</span></div>
                       </>
                     ) : (
-                      <div style={{ color: '#64748b' }}>请从风险排行或告警表中选择气缸。</div>
+                      <div className="cylinder-detail-empty">请从风险排行或告警表中选择气缸</div>
                     )}
                   </div>
                 </div>

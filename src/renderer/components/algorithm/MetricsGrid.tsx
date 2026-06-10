@@ -65,6 +65,8 @@ function MetricCard({ label, value, unit, critical, warning, good, inverse }: {
   else if (critical) colorClass = 'metric-critical';
   else if (warning) colorClass = 'metric-warning';
 
+  const trendDir = critical ? 'down' : good ? 'up' : warning ? 'down' : undefined;
+
   return (
     <div className={`algo-metric-card glass-panel ${colorClass}`}>
       <div className="algo-metric-label">{label}</div>
@@ -72,6 +74,11 @@ function MetricCard({ label, value, unit, critical, warning, good, inverse }: {
         <span className="algo-metric-number">{typeof value === 'number' ? (Number.isInteger(value) ? value : value.toFixed(1)) : value}</span>
         <span className="algo-metric-unit">{unit}</span>
       </div>
+      {trendDir && (
+        <div className={`algo-metric-trend ${trendDir}`}>
+          {trendDir === 'up' ? '↑' : '↓'}
+        </div>
+      )}
     </div>
   );
 }

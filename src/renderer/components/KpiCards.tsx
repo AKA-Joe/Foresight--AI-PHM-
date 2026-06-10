@@ -1,5 +1,4 @@
-import { useEffect, useRef } from 'react';
-import * as echarts from 'echarts';
+import { useRef } from 'react';
 import type { DashboardSnapshot } from '../../shared/types';
 
 interface Props {
@@ -7,44 +6,80 @@ interface Props {
 }
 
 export default function KpiCards({ snapshot }: Props) {
+  const prevRef = useRef(snapshot.kpis);
+  const prev = prevRef.current;
+
+  const healthDelta = snapshot.kpis.averageHealthScore - prev.averageHealthScore;
+  const qualityDelta = snapshot.kpis.dataGoodRate - prev.dataGoodRate;
+
+  prevRef.current = snapshot.kpis;
+
   return (
     <div className="kpi-grid">
-      <div className="kpi-card">
-        <div className="kpi-label">监测气缸</div>
-        <div className="kpi-value">{snapshot.kpis.totalCylinders}</div>
-        <div className="kpi-sub">在线率 100%</div>
+      <KpiCard
+        label="监测气缸"
+        value={snapshot.kpis.totalCylinders}
+        sub="在线率 100%"
+        level="normal"
+        progress={100}
+      />
+      <KpiCard
+        label="平均健康评分"
+        value={`${snapshot.kpis.averageHealthScore}/100`}
+        sub={`预警 ${snapshot.kpis.warningAlerts} · 紧急 ${snapshot.kpis.criticalAlerts}`}
+        level={snapshot.kpis.averageHealthScore > 70 ? 'normal' : snapshot.kpis.averageHealthScore > 40 ? 'warning' : 'critical'}
+        progress={snapshot.kpis.averageHealthScore}
+        delta={healthDelta}
+      />
+      <KpiCard
+        label="活跃告警"
+        value={snapshot.kpis.warningAlerts}
+        valueSuffix="预警"
+        sub={`提示 ${snapshot.kpis.infoAlerts} · 紧急 ${snapshot.kpis.criticalAlerts}`}
+        level="warning"
+        progress={Math.min(snapshot.kpis.warningAlerts * 10, 100)}
+      />
+      <KpiCard
+        label="待处理维护"
+        value={snapshot.kpis.pendingMaintenance}
+        sub="项未完成"
+        level="critical"
+        progress={Math.min(snapshot.kpis.pendingMaintenance * 20, 100)}
+      />
+      <KpiCard
+        label="数据质量"
+        value={`${snapshot.kpis.dataGoodRate}%`}
+        sub="良好率"
+        level={snapshot.kpis.dataGoodRate > 90 ? 'normal' : 'warning'}
+        progress={snapshot.kpis.dataGoodRate}
+        delta={qualityDelta}
+      />
+    </div>
+  );
+}
+
+function KpiCard({ label, value, valueSuffix, sub, level, progress, delta }: {
+  label: string;
+  value: string | number;
+  valueSuffix?: string;
+  sub: string;
+  level: 'normal' | 'warning' | 'critical';
+  progress: number;
+  delta?: number;
+}) {
+  return (
+    <div className="kpi-card" style={{ '--kpi-progress': `${Math.min(progress, 100)}%` } as React.CSSProperties}>
+      <div className="kpi-label">{label}</div>
+      <div className={`kpi-value ${level}`}>
+        {value}
+        {valueSuffix && <span className="kpi-value-suffix">{valueSuffix}</span>}
+        {delta !== undefined && delta !== 0 && (
+          <span className={`kpi-trend ${delta > 0 ? 'up' : 'down'}`}>
+            {delta > 0 ? '↑' : '↓'} {Math.abs(delta).toFixed(1)}%
+          </span>
+        )}
       </div>
-      <div className="kpi-card">
-        <div className="kpi-label">平均健康评分</div>
-        <div className="kpi-value" style={{ color: snapshot.kpis.averageHealthScore > 70 ? '#22c55e' : '#f59e0b' }}>
-          {snapshot.kpis.averageHealthScore}/100
-        </div>
-        <div className="kpi-sub">
-          预警 {snapshot.kpis.warningAlerts} · 紧急 {snapshot.kpis.criticalAlerts}
-        </div>
-      </div>
-      <div className="kpi-card">
-        <div className="kpi-label">活跃告警</div>
-        <div className="kpi-value warning">
-          {snapshot.kpis.warningAlerts}
-          <span style={{ fontSize: 14, color: '#64748b', fontWeight: 400 }}> 预警</span>
-        </div>
-        <div className="kpi-sub">
-          提示 {snapshot.kpis.infoAlerts} · 紧急 {snapshot.kpis.criticalAlerts}
-        </div>
-      </div>
-      <div className="kpi-card">
-        <div className="kpi-label">待处理维护</div>
-        <div className="kpi-value critical">{snapshot.kpis.pendingMaintenance}</div>
-        <div className="kpi-sub">项未完成</div>
-      </div>
-      <div className="kpi-card">
-        <div className="kpi-label">数据质量</div>
-        <div className="kpi-value" style={{ color: snapshot.kpis.dataGoodRate > 90 ? '#22c55e' : '#f59e0b' }}>
-          {snapshot.kpis.dataGoodRate}%
-        </div>
-        <div className="kpi-sub">良好率</div>
-      </div>
+      <div className="kpi-sub">{sub}</div>
     </div>
   );
 }

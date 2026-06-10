@@ -54,14 +54,14 @@ export default function ConfidenceGauge({ metrics }: Props) {
             length: '55%',
             width: 6,
             offsetCenter: [0, '-10%'],
-            itemStyle: { color: '#00d4ff' },
+            itemStyle: { color: '#3b82f6' },
           },
-          anchor: { show: true, size: 12, itemStyle: { color: '#00d4ff', borderWidth: 2, borderColor: '#1e3a5f' } },
+          anchor: { show: true, size: 12, itemStyle: { color: '#3b82f6', borderWidth: 2, borderColor: '#0f2847' } },
           title: {
             show: true,
             offsetCenter: [0, '65%'],
             fontSize: 11,
-            color: '#94a3b8',
+            color: '#6b8ab5',
           },
           detail: {
             valueAnimation: true,
@@ -69,7 +69,7 @@ export default function ConfidenceGauge({ metrics }: Props) {
             fontWeight: 'bold',
             offsetCenter: [0, '35%'],
             formatter: '{value}%',
-            color: metrics.confidence > 80 ? '#22c55e' : metrics.confidence > 50 ? '#f59e0b' : '#94a3b8',
+            color: metrics.confidence > 80 ? '#22c55e' : metrics.confidence > 50 ? '#f59e0b' : '#6b8ab5',
           },
           data: [{ value: metrics.confidence, name: '预测置信度' }],
         },
@@ -102,7 +102,7 @@ export default function ConfidenceGauge({ metrics }: Props) {
             fontSize: 12,
             offsetCenter: [0, 0],
             formatter: '故障 {value}%',
-            color: metrics.faultProbability > 80 ? '#ef4444' : '#94a3b8',
+            color: metrics.faultProbability > 80 ? '#ef4444' : '#6b8ab5',
           },
           data: [{ value: metrics.faultProbability }],
         },
@@ -113,7 +113,7 @@ export default function ConfidenceGauge({ metrics }: Props) {
   return (
     <div className="algo-gauge-card glass-panel">
       <div className="chart-title">置信度 & 故障概率</div>
-      <div ref={chartRef} style={{ width: '100%', height: 200 }} />
+      <div ref={chartRef} style={{ width: '100%', height: 220 }} />
     </div>
   );
 }

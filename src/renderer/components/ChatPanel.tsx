@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import Markdown from 'react-markdown';
 import type { ChatDeltaEvent, ChatDoneEvent, ChatErrorEvent } from '../../shared/types';
 
 interface ChatMessage {
@@ -17,7 +18,7 @@ const quickPrompts = [
   '请分析当前最高风险气缸，并给出维修建议。',
   '请解释当前告警规则和触发原因。',
   '请根据当前告警生成班组交接摘要。',
-  '请用适合领导汇报的方式总结项目价值。',
+  '请评估当前设备运行效率与产能影响。',
 ];
 
 export default function ChatPanel({ selectedCylinderUid }: Props) {
@@ -120,18 +121,27 @@ export default function ChatPanel({ selectedCylinderUid }: Props) {
       <div ref={scrollRef} className="chat-messages">
         {messages.map((msg) => (
           <div key={msg.id} className={`chat-msg ${msg.role} ${msg.pending ? 'loading' : ''}`}>
-            {msg.content || '正在分析当前趋势与告警上下文...'}
-            {msg.offline ? '\n\n（当前为离线 mock 模式）' : ''}
+            {msg.content ? (
+              <Markdown>{msg.content + (msg.offline ? '\n\n---\n*（当前为离线演示模式）*' : '')}</Markdown>
+            ) : (
+              '正在分析当前趋势与告警上下文...'
+            )}
           </div>
         ))}
       </div>
 
       <div className="chat-input-area">
-        <input
+        <textarea
           className="chat-input"
+          rows={1}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={placeholder}
+          onInput={(e) => {
+            const el = e.currentTarget;
+            el.style.height = 'auto';
+            el.style.height = Math.min(el.scrollHeight, 96) + 'px';
+          }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
@@ -140,7 +150,9 @@ export default function ChatPanel({ selectedCylinderUid }: Props) {
           }}
         />
         <button className="chat-send-btn" disabled={sending || !input.trim()} onClick={() => void sendPrompt(input)}>
-          发送
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>
+          </svg>
         </button>
       </div>
     </>
