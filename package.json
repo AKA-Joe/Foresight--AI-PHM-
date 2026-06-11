@@ -2,7 +2,7 @@
   "name": "ai-predictive-maintenance-demo",
   "version": "2.0.0",
   "description": "非标设备 5G+AI 预测性维护演示平台 — Electron + LLM + 数字孪生 + 浏览器插件",
-  "author": "AI青年特训营",
+  "author": "项目组",
   "license": "MIT",
   "main": "out/main/index.js",
   "type": "module",
@@ -71,6 +71,25 @@
         }
       ],
       "artifactName": "${productName}-${version}-Setup.${ext}"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
+      "artifactName": "${productName}-${version}-macOS.${ext}",
+      "category": "public.app-category.developer-tools",
+      "identity": null
+    },
+    "dmg": {
+      "contents": [
+        { "x": 130, "y": 220 },
+        { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+      ]
     },
     "nsis": {
       "oneClick": false,
