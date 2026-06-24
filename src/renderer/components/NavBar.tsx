@@ -22,15 +22,25 @@ const tabs: { key: AppView; label: string; icon: ReactNode }[] = [
     label: '网络态势感知',
     icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
   },
+  {
+    key: 'benchmark',
+    label: '行业基准库',
+    icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-6"/></svg>,
+  },
+  {
+    key: 'roiCalculator',
+    label: 'ROI分析',
+    icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12M8 10l4-4 4 4M8 14l4 4 4-4"/></svg>,
+  },
 ];
 
 interface Props {
   current: AppView;
   onChange: (view: AppView) => void;
-  isFullscreen: boolean;
+  isFullscreen?: boolean;
 }
 
-export default function NavBar({ current, onChange, isFullscreen }: Props) {
+export default function NavBar({ current, onChange }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
 
@@ -45,8 +55,6 @@ export default function NavBar({ current, onChange, isFullscreen }: Props) {
       });
     }
   }, [current]);
-
-  if (isFullscreen) return null;
 
   return (
     <nav className="nav-bar" ref={containerRef}>

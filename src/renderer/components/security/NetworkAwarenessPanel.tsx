@@ -56,12 +56,14 @@ interface ThreatEvent {
 }
 
 const MOCK_NODES: ConnectionNode[] = [
-  { name: 'MEC-01', ip: '10.8.1.47', status: 'online', latency: 3.2, type: '边缘计算' },
-  { name: 'MEC-02', ip: '10.8.1.48', status: 'online', latency: 4.1, type: '边缘计算' },
+  { name: 'MEC-01', ip: '10.8.1.47', status: 'online', latency: 3.2, type: '边缘计算节点' },
+  { name: 'MEC-02', ip: '10.8.1.48', status: 'online', latency: 4.1, type: '边缘计算节点' },
   { name: 'GW-Core', ip: '10.8.0.1', status: 'online', latency: 1.1, type: '核心网关' },
   { name: 'IoT-GW', ip: '10.8.2.10', status: 'warning', latency: 12.3, type: '工业网关' },
-  { name: '5G-gNB', ip: '10.8.0.5', status: 'online', latency: 2.0, type: '基站' },
+  { name: '5G-gNB', ip: '10.8.0.5', status: 'online', latency: 2.0, type: '5G基站' },
   { name: 'PLC-Bridge', ip: '10.8.3.1', status: 'online', latency: 5.7, type: 'PLC网桥' },
+  { name: 'DMZ-FW', ip: '10.8.0.254', status: 'online', latency: 0.8, type: '防火墙' },
+  { name: 'SCADA-Server', ip: '10.8.4.20', status: 'warning', latency: 8.9, type: 'SCADA服务器' },
 ];
 
 const MOCK_EVENTS: ThreatEvent[] = [
@@ -262,6 +264,12 @@ export default function NetworkAwarenessPanel() {
         </div>
       </div>
 
+      {/* Audit log */}
+      <AuditLog />
+
+      {/* 5G capability showcase */}
+      <FiveGCapabilityPanel />
+
       {/* Tool cards */}
       <div className="network-section-title" style={{ marginTop: 20 }}>安全巡检工具</div>
       <div className="security-cards">
@@ -324,6 +332,150 @@ export default function NetworkAwarenessPanel() {
               ))}
             </div>
           )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+const AUDIT_LOGS = [
+  { id: 'a1', time: '2026-06-14 14:30:12', user: '管理员', action: '查看气缸 CYL-07 详细数据', ip: '10.8.0.100' },
+  { id: 'a2', time: '2026-06-14 13:45:08', user: '运维工程师', action: '确认告警 AL-0042，标记为已处理', ip: '10.8.1.52' },
+  { id: 'a3', time: '2026-06-14 12:10:33', user: '管理员', action: '修改异常阈值参数: σ=3.0→3.5', ip: '10.8.0.100' },
+  { id: 'a4', time: '2026-06-14 11:28:15', user: '系统', action: '自动备份数据至离线存储节点', ip: '-' },
+  { id: 'a5', time: '2026-06-14 10:05:44', user: '审计员', action: '导出本月告警统计报表', ip: '10.8.0.200' },
+];
+
+function AuditLog() {
+  return (
+    <div style={{ marginBottom: 'var(--space-4)' }}>
+      <div className="network-section-title" style={{ marginTop: 8 }}>
+        操作审计日志
+      </div>
+      <div style={{
+        border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)',
+        background: 'var(--bg-card)', overflow: 'hidden',
+      }}>
+        <table className="data-table" style={{ width: '100%' }}>
+          <thead>
+            <tr>
+              <th style={{ width: 140 }}>时间</th>
+              <th style={{ width: 90 }}>用户</th>
+              <th>操作</th>
+              <th style={{ width: 100 }}>IP 地址</th>
+            </tr>
+          </thead>
+          <tbody>
+            {AUDIT_LOGS.map((log) => (
+              <tr key={log.id}>
+                <td style={{ fontFamily: 'var(--font-mono)', fontSize: 10 }}>
+                  <span style={{ opacity: 0.6 }}>{log.time.slice(0, 10)}</span>{' '}
+                  <span style={{ fontWeight: 600 }}>{log.time.slice(11)}</span>
+                </td>
+                <td>
+                  <span style={{
+                    fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 4,
+                    background: log.user === '系统' ? 'var(--accent-dim)' : 'rgba(16,185,129,0.08)',
+                    color: log.user === '系统' ? 'var(--accent)' : 'var(--level-normal)',
+                  }}>
+                    {log.user}
+                  </span>
+                </td>
+                <td style={{ fontSize: 11, color: 'var(--text-primary)' }}>{log.action}</td>
+                <td style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--text-dimmed)' }}>
+                  {log.ip}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function FiveGCapabilityPanel() {
+  const [expanded, setExpanded] = useState(true);
+  const chartRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!chartRef.current || !expanded) return;
+    const chart = echarts.init(chartRef.current);
+    const now = Date.now();
+    const data = Array.from({ length: 60 }, (_, i) => {
+      const t = now - (59 - i) * 1000;
+      return [t, 3 + Math.random() * 12, 8 + Math.random() * 25, 2 + Math.random() * 5];
+    });
+    chart.setOption({
+      tooltip: { trigger: 'axis' },
+      legend: { data: ['URLLC延迟', 'eMBB吞吐', 'mMTC连接'], bottom: 0, textStyle: { color: '#8a9bb5', fontSize: 10 }, itemWidth: 12, itemHeight: 8 },
+      grid: { left: 50, right: 50, top: 20, bottom: 36 },
+      xAxis: { type: 'time', axisLabel: { color: '#6b8ab5', fontSize: 9 }, splitLine: { show: false } },
+      yAxis: [
+        { type: 'value', name: 'ms', axisLabel: { color: '#6b8ab5', fontSize: 9 }, splitLine: { lineStyle: { color: 'rgba(59,130,246,0.06)' } } },
+        { type: 'value', name: 'Mbps/个', axisLabel: { color: '#6b8ab5', fontSize: 9 }, splitLine: { show: false } },
+      ],
+      series: [
+        { name: 'URLLC延迟', type: 'line', yAxisIndex: 0, smooth: true, symbol: 'none', lineStyle: { color: '#ef4444', width: 1.5 }, data: data.map(d => [d[0], d[1]]) },
+        { name: 'eMBB吞吐', type: 'line', yAxisIndex: 1, smooth: true, symbol: 'none', lineStyle: { color: '#3b82f6', width: 1.5 }, data: data.map(d => [d[0], d[2]]) },
+        { name: 'mMTC连接', type: 'line', yAxisIndex: 1, smooth: true, symbol: 'none', lineStyle: { color: '#10b981', width: 1.5 }, data: data.map(d => [d[0], d[3]]) },
+      ],
+    });
+    const h = () => chart.resize();
+    window.addEventListener('resize', h);
+    return () => { chart.dispose(); window.removeEventListener('resize', h); };
+  }, [expanded]);
+
+  return (
+    <div style={{ marginBottom: 'var(--space-4)' }}>
+      <div className="network-section-title" style={{ cursor: 'pointer', marginBottom: 8 }} onClick={() => setExpanded(!expanded)}>
+        5G 网络特性展示
+        <span style={{ fontSize: 9, marginLeft: 8, color: 'var(--text-dimmed)', fontWeight: 400 }}>
+          {expanded ? '▼' : '►'} URLLC · eMBB · mMTC
+        </span>
+      </div>
+      {expanded && (
+        <div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--space-3)', marginBottom: 12 }}>
+            <div className="glass-panel" style={{ padding: '12px 14px', borderLeft: '3px solid #ef4444' }}>
+              <div style={{ fontSize: 10, fontWeight: 600, color: '#f87171', marginBottom: 4 }}>⚡ URLLC 超低延迟</div>
+              <div style={{ fontFamily: 'var(--font-data)', fontSize: 22, fontWeight: 700, color: '#ef4444' }}>1.2<span style={{ fontSize: 12, color: '#8a9bb5' }}>ms</span></div>
+              <div style={{ fontSize: 9, color: '#6b8ab5', marginTop: 2 }}>工业控制指令 <b style={{ color: '#22c55e' }}>✓ 达标</b> (&lt;5ms)</div>
+              <div style={{ height: 3, borderRadius: 2, background: 'rgba(239,68,68,0.1)', marginTop: 6, overflow: 'hidden' }}>
+                <div style={{ width: '24%', height: '100%', background: '#ef4444', borderRadius: 2 }} />
+              </div>
+            </div>
+            <div className="glass-panel" style={{ padding: '12px 14px', borderLeft: '3px solid #3b82f6' }}>
+              <div style={{ fontSize: 10, fontWeight: 600, color: '#60a5fa', marginBottom: 4 }}>📶 eMBB 增强宽带</div>
+              <div style={{ fontFamily: 'var(--font-data)', fontSize: 22, fontWeight: 700, color: '#3b82f6' }}>847<span style={{ fontSize: 12, color: '#8a9bb5' }}>Mbps</span></div>
+              <div style={{ fontSize: 9, color: '#6b8ab5', marginTop: 2 }}>数字孪生视频流 <b style={{ color: '#22c55e' }}>✓ 流畅</b> (&gt;100Mbps)</div>
+              <div style={{ height: 3, borderRadius: 2, background: 'rgba(59,130,246,0.1)', marginTop: 6, overflow: 'hidden' }}>
+                <div style={{ width: '85%', height: '100%', background: '#3b82f6', borderRadius: 2 }} />
+              </div>
+            </div>
+            <div className="glass-panel" style={{ padding: '12px 14px', borderLeft: '3px solid #10b981' }}>
+              <div style={{ fontSize: 10, fontWeight: 600, color: '#34d399', marginBottom: 4 }}>📡 mMTC 海量连接</div>
+              <div style={{ fontFamily: 'var(--font-data)', fontSize: 22, fontWeight: 700, color: '#10b981' }}>12,847<span style={{ fontSize: 12, color: '#8a9bb5' }}>台</span></div>
+              <div style={{ fontSize: 9, color: '#6b8ab5', marginTop: 2 }}>传感器在线 <b style={{ color: '#22c55e' }}>99.7%</b> 接入成功率</div>
+              <div style={{ height: 3, borderRadius: 2, background: 'rgba(16,185,129,0.1)', marginTop: 6, overflow: 'hidden' }}>
+                <div style={{ width: '64%', height: '100%', background: '#10b981', borderRadius: 2 }} />
+              </div>
+            </div>
+          </div>
+          <div className="glass-panel" style={{ padding: 12 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#c0d0e0', marginBottom: 8 }}>5G 网络切片实时监测</div>
+            <div ref={chartRef} style={{ height: 160 }} />
+          </div>
+          <div style={{
+            display: 'flex', gap: 12, marginTop: 10, fontSize: 10, color: '#6b8ab5',
+            padding: '8px 12px', borderRadius: 6, background: 'rgba(59,130,246,0.04)',
+          }}>
+            <span>🔒 <b style={{ color: '#c0d0e0' }}>网络切片 3</b> (工业控制/视频回传/传感器)</span>
+            <span style={{ color: 'var(--border-color)' }}>|</span>
+            <span>📍 <b style={{ color: '#c0d0e0' }}>5G SA</b> 独立组网</span>
+            <span style={{ color: 'var(--border-color)' }}>|</span>
+            <span>📡 <b style={{ color: '#c0d0e0' }}>3.5GHz</b> + <b style={{ color: '#c0d0e0' }}>2.1GHz</b> 双频覆盖</span>
+          </div>
         </div>
       )}
     </div>

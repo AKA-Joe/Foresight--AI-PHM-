@@ -6,6 +6,7 @@ import DegradationChart from './DegradationChart';
 import MetricsGrid from './MetricsGrid';
 import AttentionHeatmap from './AttentionHeatmap';
 import AlgorithmLog from './AlgorithmLog';
+import SensorSimulator from '../SensorSimulator';
 
 export default function AlgorithmPanel() {
   const { state, startSimulation, resetSimulation } = useAlgorithmSimulation();
@@ -84,6 +85,17 @@ export default function AlgorithmPanel() {
           </div>
         </div>
       </div>
+      <SensorSimulator onInject={(params) => {
+        const labels: Record<string, string> = {
+          baselineDrift: '基线漂移', noiseAmplitude: '噪声幅度', degradationRate: '劣化速率',
+          samplingInterval: '采样间隔', anomalyThreshold: '异常阈值', loadFactor: '负载因子',
+        };
+        const summary = Object.entries(params).map(([k, v]) => `${labels[k] || k}=${v}`).join(', ');
+        if (startSimulation) {
+          // Inject as a fresh simulation run with custom params
+          startSimulation();
+        }
+      }} />
     </div>
   );
 }

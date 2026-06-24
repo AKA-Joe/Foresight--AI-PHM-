@@ -50,182 +50,125 @@ function makeRecords(
   });
 }
 
-export const cylinders: CylinderAsset[] = [
-  {
-    uid: 'CYL-CSKG-A01-ST01-CLAMP-R',
-    deviceId: 'EQ-03-A1',
-    deviceName: '装配一线夹爪专机',
-    stationId: 'ST-01',
-    lineId: 'LINE-A',
-    name: '夹爪缩回气缸',
-    actionType: 'retract',
-    baselineMs: 230,
-    fixedThresholdMs: 345,
-    installDate: '2026-03-12',
-    healthScore: 68,
-    alertLevel: 'warning',
-    faultProbability: 72,
-  },
-  {
-    uid: 'CYL-CSKG-A01-ST02-PUSH-E',
-    deviceId: 'EQ-03-A1',
-    deviceName: '装配一线夹爪专机',
-    stationId: 'ST-02',
-    lineId: 'LINE-A',
-    name: '推送伸出气缸',
-    actionType: 'extend',
-    baselineMs: 212,
-    fixedThresholdMs: 318,
-    installDate: '2026-04-05',
-    healthScore: 93,
-    alertLevel: 'normal',
-    faultProbability: 18,
-  },
-  {
-    uid: 'CYL-CSKG-A02-ST03-LIFT-R',
-    deviceId: 'EQ-04-B2',
-    deviceName: '压装二线升降机构',
-    stationId: 'ST-03',
-    lineId: 'LINE-B',
-    name: '升降复位气缸',
-    actionType: 'reset',
-    baselineMs: 260,
-    fixedThresholdMs: 390,
-    installDate: '2026-02-18',
-    healthScore: 41,
-    alertLevel: 'critical',
-    faultProbability: 91,
-  },
-  {
-    uid: 'CYL-CSKG-B01-ST04-ROTATE',
-    deviceId: 'EQ-05-C1',
-    deviceName: '检测转台工位',
-    stationId: 'ST-04',
-    lineId: 'LINE-C',
-    name: '旋转到位气缸',
-    actionType: 'rotate',
-    baselineMs: 310,
-    fixedThresholdMs: 465,
-    installDate: '2026-01-26',
-    healthScore: 76,
-    alertLevel: 'info',
-    faultProbability: 43,
-  },
-  {
-    uid: 'CYL-CSKG-B02-ST05-SEAL',
-    deviceId: 'EQ-06-C2',
-    deviceName: '封装测试专机',
-    stationId: 'ST-05',
-    lineId: 'LINE-C',
-    name: '封口压紧气缸',
-    actionType: 'extend',
-    baselineMs: 245,
-    fixedThresholdMs: 368,
-    installDate: '2026-05-02',
-    healthScore: 89,
-    alertLevel: 'normal',
-    faultProbability: 24,
-  },
-  {
-    uid: 'CYL-CSKG-C01-ST06-FEED',
-    deviceId: 'EQ-07-D1',
-    deviceName: '自动上料单元',
-    stationId: 'ST-06',
-    lineId: 'LINE-D',
-    name: '上料推出气缸',
-    actionType: 'extend',
-    baselineMs: 198,
-    fixedThresholdMs: 297,
-    installDate: '2026-04-22',
-    healthScore: 82,
-    alertLevel: 'info',
-    faultProbability: 36,
-  },
+// Generator: 75 cylinders across 5 lines, 15 stations (5-6 cylinders each)
+function generateCylinders(): CylinderAsset[] {
+  const lines = ['LINE-A', 'LINE-B', 'LINE-C', 'LINE-D', 'LINE-E'];
+  const lineNames = ['装配一线', '压装二线', '检测封装线', '上料分拣线', '包装码垛线'];
+  const stations: { id: string; name: string; line: string }[] = [
+    { id: 'ST-01', name: '夹爪专机', line: 'LINE-A' }, { id: 'ST-02', name: '推送工位', line: 'LINE-A' }, { id: 'ST-03', name: '缓冲工位', line: 'LINE-A' },
+    { id: 'ST-04', name: '压装机构', line: 'LINE-B' }, { id: 'ST-05', name: '冲压工位', line: 'LINE-B' }, { id: 'ST-06', name: '焊接工位', line: 'LINE-B' },
+    { id: 'ST-07', name: '检测转台', line: 'LINE-C' }, { id: 'ST-08', name: '封装测试', line: 'LINE-C' }, { id: 'ST-09', name: '气密检测', line: 'LINE-C' },
+    { id: 'ST-10', name: '上料单元', line: 'LINE-D' }, { id: 'ST-11', name: '分拣机械臂', line: 'LINE-D' }, { id: 'ST-12', name: '翻转工位', line: 'LINE-D' },
+    { id: 'ST-13', name: '包装工位', line: 'LINE-E' }, { id: 'ST-14', name: '码垛机器人', line: 'LINE-E' }, { id: 'ST-15', name: 'AGV 接驳', line: 'LINE-E' },
+  ];
+
+  const actions = ['extend', 'retract', 'rotate', 'reset'] as const;
+  const actionLabels: Record<string, string> = { extend: '伸出', retract: '缩回', rotate: '旋转', reset: '复位' };
+  const stationFeature: Record<string, string[]> = {
+    'ST-01': ['夹爪伸出', '夹爪缩回', '夹爪旋转', '定位锁紧', '定位松开'],
+    'ST-02': ['推送伸出', '推送缩回', '缓冲', '导向', '定位'],
+    'ST-03': ['缓冲伸出', '缓冲缩回', '导向', '压紧', '推料'],
+    'ST-04': ['压装下压', '压装复位', '升降上升', '升降下降', '夹紧'],
+    'ST-05': ['冲压主缸', '冲压复位', '退料', '顶出', '夹紧'],
+    'ST-06': ['焊接夹紧', '焊接推进', '进给', '退刀', '吹气'],
+    'ST-07': ['旋转到位', '旋转复位', '升降上升', '升降下降', '夹紧'],
+    'ST-08': ['封口压紧', '封口复位', '压合', '检测顶升', '退料'],
+    'ST-09': ['气密夹紧', '气密封堵', '测试升降', '吹干', '排料'],
+    'ST-10': ['上料推出', '上料举升', '料仓顶升', '分料', '待料'],
+    'ST-11': ['抓取伸出', '抓取缩回', '翻转正', '翻转反', '旋转定位'],
+    'ST-12': ['翻转伸出', '翻转缩回', '定位', '夹紧', '推料'],
+    'ST-13': ['压合下压', '压合复位', '封口', '贴标', '喷码'],
+    'ST-14': ['伸缩伸出', '伸缩缩回', '旋转正', '旋转反', '举升'],
+    'ST-15': ['举升上升', '举升下降', '对接伸出', '对接缩回', '锁定'],
+  };
+
+  const result: CylinderAsset[] = [];
+  let idx = 0;
+
+  for (const st of stations) {
+    const lineIdx = lines.indexOf(st.line);
+    const features = stationFeature[st.id] || ['执行'];
+    const cylCount = features.length;
+
+    for (let c = 0; c < cylCount; c++) {
+      idx++;
+      const uid = `CYL-CSKG-${st.id}-${idx.toString().padStart(3, '0')}`;
+      const baseline = 150 + Math.floor(Math.random() * 200);
+      const healthScore = Math.max(10, Math.min(100, Math.round(
+        Math.random() < 0.08 ? 20 + Math.random() * 30 : // 8% critical
+        Math.random() < 0.25 ? 40 + Math.random() * 30 : // 17% warning
+        65 + Math.random() * 35                            // 75% normal
+      )));
+      const faultProb = Math.round((100 - healthScore) * (0.6 + Math.random() * 0.4));
+
+      let alertLevel: 'normal' | 'info' | 'warning' | 'critical' = 'normal';
+      if (healthScore < 30) alertLevel = 'critical';
+      else if (healthScore < 50) alertLevel = 'warning';
+      else if (healthScore < 65) alertLevel = 'info';
+
+      const actionType = actions[idx % actions.length];
+      result.push({
+        uid, deviceId: `EQ-${lineIdx + 1}-${String(lineIdx * 10 + st.id.slice(-2))}`,
+        deviceName: `${lineNames[lineIdx]}${st.name}`,
+        stationId: st.id, lineId: st.line,
+        name: `${features[c]}${actionLabels[actionType] || '动作'}缸`,
+        actionType, baselineMs: baseline, fixedThresholdMs: Math.round(baseline * 1.5),
+        installDate: `202${Math.floor(Math.random() * 6)}-${String(Math.floor(Math.random() * 12 + 1)).padStart(2, '0')}-${String(Math.floor(Math.random() * 28 + 1)).padStart(2, '0')}`,
+        healthScore, alertLevel, faultProbability: faultProb,
+      });
+    }
+  }
+  return result;
+}
+
+export const cylinders: CylinderAsset[] = generateCylinders();
+
+const PATTERNS: ('normal' | 'drift' | 'critical' | 'volatile' | 'recovered' | 'dirty')[] = ['normal', 'drift', 'critical', 'volatile', 'recovered', 'dirty'];
+export const records: ActionTimeRecord[] = cylinders.flatMap((c, i) => makeRecords(c, PATTERNS[i % PATTERNS.length]));
+
+// Generate alerts from cylinders with health issues
+function isAlertLevel(l: string): l is 'info' | 'warning' | 'critical' { return l === 'info' || l === 'warning' || l === 'critical'; }
+const alertable = cylinders.filter(c => isAlertLevel(c.alertLevel) && (c.alertLevel === 'critical' || c.alertLevel === 'warning' || Math.random() > 0.5));
+export const alerts: AlertRecord[] = alertable.map((c, i): AlertRecord => {
+    const times = [0.5, 1.5, 3, 4, 6, 8, 10, 12];
+    const reasons: Record<string, string> = {
+      critical: '执行时间持续超过固定阈值，设备处于高风险状态。建议立即停机处理。',
+      warning: '最近连续动作超过动态上界，退化速率上升，符合趋势劣化预警条件。',
+      info: '执行时间出现周期性波动，尚未形成持续劣化趋势，建议关注后续变化。',
+    };
+    const suggestions: Record<string, string> = {
+      critical: '立即停机，检查机械卡滞、气管泄漏、限位信号及密封件状态。',
+      warning: '安排计划检修，优先检查密封圈状态、导轨阻力与气源压力。',
+      info: '加强日检频次至每班一次，关注趋势走向。',
+    };
+    return {
+      id: `ALM-20260609-${String(i + 1).padStart(3, '0')}`,
+      timestamp: isoHoursAgo(times[i % times.length], Math.floor(Math.random() * 30)),
+      level: c.alertLevel as 'info' | 'warning' | 'critical',
+      cylinderUid: c.uid, deviceId: c.deviceId,
+      title: `${c.name}动作执行时间${c.alertLevel === 'critical' ? '触发阈值' : c.alertLevel === 'warning' ? '持续爬升' : '轻度波动'}`,
+      reason: reasons[c.alertLevel] || '需检查设备状态。',
+      suggestion: suggestions[c.alertLevel] || '建议安排计划维护。',
+      status: c.alertLevel === 'critical' ? 'active' : c.alertLevel === 'warning' ? 'active' : Math.random() > 0.5 ? 'acknowledged' : 'active',
+    };
+  });
+
+const maintenanceTypes = ['seal_replacement', 'inspection', 'air_pressure_check', 'lubrication'] as const;
+const operators = ['设备班-王工', '设备班-张工', '设备班-李工', '值班长-赵工', '计划员-陈工', '设备班-刘工'];
+const results = [
+  '更换密封件后恢复正常，动作时间回到基线附近。', '检查完毕，建议持续观察趋势变化。', '气源压力正常，调整导轨间隙后偏差减小。',
+  '润滑保养完成，运行平稳。', '传感器重新校准，数据质量恢复。',
 ];
 
-export const records: ActionTimeRecord[] = [
-  ...makeRecords(cylinders[0], 'drift'),
-  ...makeRecords(cylinders[1], 'normal'),
-  ...makeRecords(cylinders[2], 'critical'),
-  ...makeRecords(cylinders[3], 'volatile'),
-  ...makeRecords(cylinders[4], 'recovered'),
-  ...makeRecords(cylinders[5], 'dirty'),
-];
-
-export const alerts: AlertRecord[] = [
-  {
-    id: 'ALM-20260609-001',
-    timestamp: isoHoursAgo(1, 10),
-    level: 'warning',
-    cylinderUid: 'CYL-CSKG-A01-ST01-CLAMP-R',
-    deviceId: 'EQ-03-A1',
-    title: '夹爪缩回动作执行时间持续爬升',
-    reason: '最近12次动作连续超过动态阈值，24小时窗口斜率持续为正，符合趋势劣化预警条件。',
-    suggestion: '安排计划检修，优先检查密封圈、导轨阻力、润滑状态与气源压力。',
-    status: 'active',
-  },
-  {
-    id: 'ALM-20260609-002',
-    timestamp: isoHoursAgo(0, 30),
-    level: 'critical',
-    cylinderUid: 'CYL-CSKG-A02-ST03-LIFT-R',
-    deviceId: 'EQ-04-B2',
-    title: '升降复位气缸触发固定阈值保护',
-    reason: '执行时间超过固定阈值上限，模拟故障概率达到91%。',
-    suggestion: '建议立即停机检查，确认是否存在机械卡滞、气管泄漏或限位信号延迟。',
-    status: 'active',
-  },
-  {
-    id: 'ALM-20260609-003',
-    timestamp: isoHoursAgo(3),
-    level: 'info',
-    cylinderUid: 'CYL-CSKG-B01-ST04-ROTATE',
-    deviceId: 'EQ-05-C1',
-    title: '旋转到位动作波动增大',
-    reason: '执行时间出现多次短周期高波动，尚未形成连续劣化趋势。',
-    suggestion: '关注后续趋势，建议班中点检传感器反馈稳定性。',
-    status: 'acknowledged',
-  },
-  {
-    id: 'ALM-20260609-004',
-    timestamp: isoHoursAgo(5),
-    level: 'info',
-    cylinderUid: 'CYL-CSKG-C01-ST06-FEED',
-    deviceId: 'EQ-07-D1',
-    title: '上料推出气缸数据质量提醒',
-    reason: '10分钟窗口内可疑与脏数据比例升高，可能影响趋势判断。',
-    suggestion: '检查采集网关、PLC时间同步和动作完成信号。',
-    status: 'active',
-  },
-];
-
-export const maintenance: MaintenanceRecord[] = [
-  {
-    id: 'MNT-20260608-021',
-    cylinderUid: 'CYL-CSKG-B02-ST05-SEAL',
-    deviceId: 'EQ-06-C2',
-    createdAt: '2026-06-08T08:30:00+08:00',
-    completedAt: '2026-06-08T10:10:00+08:00',
-    type: 'seal_replacement',
-    result: '更换密封圈后动作执行时间恢复至基线附近，趋势劣化消失。',
-    operator: '设备班-王工',
-  },
-  {
-    id: 'MNT-20260609-004',
-    cylinderUid: 'CYL-CSKG-A01-ST01-CLAMP-R',
-    deviceId: 'EQ-03-A1',
-    createdAt: '2026-06-09T09:15:00+08:00',
-    type: 'inspection',
-    result: '已生成计划检修任务，待周末换班窗口处理。',
-    operator: '设备班-李工',
-  },
-  {
-    id: 'MNT-20260609-008',
-    cylinderUid: 'CYL-CSKG-A02-ST03-LIFT-R',
-    deviceId: 'EQ-04-B2',
-    createdAt: '2026-06-09T09:40:00+08:00',
-    type: 'air_pressure_check',
-    result: '紧急告警待处理，建议先确认气源压力和机械导向。',
-    operator: '值班长-赵工',
-  },
-];
+export const maintenance: MaintenanceRecord[] = cylinders
+  .filter((_, i) => i % 5 === 0 || cylinders[i].alertLevel === 'critical')
+  .slice(0, 50)
+  .map((c, i) => ({
+    id: `MNT-202606${String(Math.floor(i / 5) + 8).padStart(2, '0')}-${String(i + 1).padStart(3, '0')}`,
+    cylinderUid: c.uid, deviceId: c.deviceId,
+    createdAt: isoHoursAgo(4 * i, Math.floor(Math.random() * 30)),
+    completedAt: i % 3 === 0 ? isoHoursAgo(4 * i - 1, 30) : undefined,
+    type: maintenanceTypes[i % maintenanceTypes.length],
+    result: results[i % results.length],
+    operator: operators[i % operators.length],
+  }));

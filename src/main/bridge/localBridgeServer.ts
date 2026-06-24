@@ -65,6 +65,16 @@ export function startLocalBridge(mainWindow: BrowserWindow, port: number, token:
       });
     }
 
+    // PPT launch button endpoint — brings app to front + replays splash
+    if (req.method === 'GET' && req.url === '/launch') {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+      mainWindow.show();
+      // Tell renderer to replay splash animation
+      mainWindow.webContents.send('replay-splash');
+      return json(res, 200, { ok: true, focused: true, splashReplay: true });
+    }
+
     if (req.method === 'POST' && req.url === '/extension/ingest') {
       try {
         const parsed = ingestSchema.parse(JSON.parse(await readBody(req)));

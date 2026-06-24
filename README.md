@@ -120,4 +120,4 @@ npm run dist      # 生产构建 + 打包发布
 
 ---
 
-<p align="center"><sub>智瞳·Aura-PHM v1.0.0 — 常熟电信 · AI青年特训营技术预研项目</sub></p>
+<p align="center"><sub>智瞳·Aura-PHM v1.0.0 — AI青年特训营·第三组 技术预研项目</sub></p>

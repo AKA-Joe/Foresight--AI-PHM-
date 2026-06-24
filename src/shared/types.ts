@@ -149,7 +149,7 @@ export interface AppStatus {
   };
 }
 
-export type AppView = 'dashboard' | 'algorithm' | 'bigscreen' | 'security';
+export type AppView = 'dashboard' | 'algorithm' | 'bigscreen' | 'security' | 'benchmark' | 'roiCalculator';
 
 export type AlgorithmPhase =
   | 'idle'

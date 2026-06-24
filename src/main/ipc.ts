@@ -56,6 +56,17 @@ export function registerIpcHandlers(mainWindow: BrowserWindow) {
     return listExtensionEvents();
   });
 
+  // ── Window controls for frameless title bar ──
+  ipcMain.on('window:minimize', () => mainWindow.minimize());
+  ipcMain.on('window:maximize', () => {
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow.maximize();
+    }
+  });
+  ipcMain.on('window:close', () => mainWindow.close());
+
   const knownExtensions = new Set<string>();
 
   mainWindow.webContents.on('ipc-message', (_event, channel) => {

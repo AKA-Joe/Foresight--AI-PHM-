@@ -69,6 +69,13 @@ function KpiCard({ label, value, valueSuffix, sub, level, progress, delta }: {
 }) {
   return (
     <div className="kpi-card" style={{ '--kpi-progress': `${Math.min(progress, 100)}%` } as React.CSSProperties}>
+      {/* Corner brackets */}
+      <span className="kpi-card-corner tl" />
+      <span className="kpi-card-corner tr" />
+      <span className="kpi-card-corner bl" />
+      <span className="kpi-card-corner br" />
+      {/* Scan line on progress bar */}
+      <span className="kpi-scan-line" />
       <div className="kpi-label">{label}</div>
       <div className={`kpi-value ${level}`}>
         {value}

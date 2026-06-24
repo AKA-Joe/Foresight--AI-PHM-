@@ -7,7 +7,16 @@ interface RealtimeData {
   stats: { label: string; value: number; unit: string }[];
 }
 
-const HEALTH_DIMS = ['网络连通性', '传感器可用率', '边缘计算负载', '数据质量', '气缸健康度', '告警闭环率'];
+const HEALTH_DIMS = [
+  '设备健康度',
+  '故障概率指数',
+  '动作精度',
+  '劣化速率',
+  '维护完成率',
+  '备件满足率',
+  '产线稼动率',
+  '平均无故障时间',
+];
 
 const ALERT_MESSAGES = [
   { level: 'critical', msg: 'CYL-0817 动作超固定阈值 320ms' },
@@ -35,12 +44,20 @@ export function useMockRealtimeData(): RealtimeData {
   const [data, setData] = useState<RealtimeData>(() => ({
     traffic: Array.from({ length: 30 }, () => Math.round(Math.random() * 40 + 30)),
     alerts: ALERT_MESSAGES.slice(0, 5).map((a) => ({ ...a, time: timeStr() })),
-    health: HEALTH_DIMS.map((name) => ({ name, score: Math.round(Math.random() * 30 + 65) })),
+    health: HEALTH_DIMS.map((name, i) => {
+      // Realistic initial scores per dimension
+      const base: Record<string, number> = {
+        '设备健康度': 68, '故障概率指数': 72, '动作精度': 85,
+        '劣化速率': 58, '维护完成率': 90, '备件满足率': 87,
+        '产线稼动率': 76, '平均无故障时间': 65,
+      };
+      return { name, score: base[name] || Math.round(Math.random() * 20 + 65) };
+    }),
     stats: [
-      { label: '在线设备', value: 127, unit: '台' },
-      { label: '5G 基站', value: 8, unit: '个' },
-      { label: '数据吞吐', value: 2.4, unit: 'GB/min' },
-      { label: '平均延迟', value: 4.7, unit: 'ms' },
+      { label: '监测设备', value: 127, unit: '台' },
+      { label: '今日告警', value: 6, unit: '条' },
+      { label: 'MTBF', value: 342, unit: 'h' },
+      { label: 'OEE', value: 87.3, unit: '%' },
     ],
   }));
 
@@ -59,8 +76,9 @@ export function useMockRealtimeData(): RealtimeData {
             score: Math.max(30, Math.min(100, h.score + Math.round((Math.random() - 0.45) * 5))),
           })),
           stats: prev.stats.map((s) => {
-            if (s.label === '数据吞吐') return { ...s, value: parseFloat((s.value + (Math.random() - 0.5) * 0.3).toFixed(1)) };
-            if (s.label === '平均延迟') return { ...s, value: parseFloat(Math.max(1, s.value + (Math.random() - 0.5) * 1.2).toFixed(1)) };
+            if (s.label === '今日告警') return { ...s, value: Math.max(0, s.value + Math.round((Math.random() - 0.55) * 2)) };
+            if (s.label === 'MTBF') return { ...s, value: Math.round(Math.max(100, s.value + (Math.random() - 0.5) * 20)) };
+            if (s.label === 'OEE') return { ...s, value: parseFloat(Math.max(60, Math.min(99, s.value + (Math.random() - 0.5) * 1.5)).toFixed(1)) };
             return s;
           }),
         };

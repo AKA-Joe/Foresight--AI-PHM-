@@ -19,6 +19,11 @@ type PredMaintApi = {
   app: {
     getStatus(): Promise<AppStatus>;
   };
+  window: {
+    minimize(): void;
+    maximize(): void;
+    close(): void;
+  };
 };
 
 const api: PredMaintApi = {
@@ -65,6 +70,16 @@ const api: PredMaintApi = {
   app: {
     getStatus: () => ipcRenderer.invoke('app:getStatus'),
   },
+  window: {
+    minimize: () => ipcRenderer.send('window:minimize'),
+    maximize: () => ipcRenderer.send('window:maximize'),
+    close: () => ipcRenderer.send('window:close'),
+  },
 };
 
 contextBridge.exposeInMainWorld('predMaint', api);
+
+// Forward splash-replay signal from main process to renderer
+ipcRenderer.on('replay-splash', () => {
+  window.dispatchEvent(new CustomEvent('replay-splash'));
+});

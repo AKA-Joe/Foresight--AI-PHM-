@@ -4,11 +4,10 @@ import 'echarts-gl';
 import { useMockRealtimeData } from './useMockRealtimeData';
 
 interface Props {
-  isFullscreen: boolean;
-  onToggleFullscreen: () => void;
+  isFullscreen?: boolean;
 }
 
-export default function BigScreenView({ isFullscreen, onToggleFullscreen }: Props) {
+export default function BigScreenView({ isFullscreen = false }: Props) {
   const [viewMode, setViewMode] = useState<'global' | 'region' | 'device'>('global');
   const { traffic, alerts, health, stats } = useMockRealtimeData();
 
@@ -36,14 +35,14 @@ export default function BigScreenView({ isFullscreen, onToggleFullscreen }: Prop
 
       <div className="bigscreen-grid">
         <div className="bs-left-col">
-          <TrafficPanel data={traffic} />
-          <StatsCards stats={stats} />
+          <TrafficPanel data={traffic} viewMode={viewMode} />
+          <ModeParamsPanel viewMode={viewMode} health={health} stats={stats} alerts={alerts} />
         </div>
         <div className="bs-center">
           <Globe3D viewMode={viewMode} />
         </div>
         <div className="bs-right-col">
-          <AssetHealthPanel health={health} />
+          <AssetHealthPanel health={health} viewMode={viewMode} />
           <AlertEventsPanel alerts={alerts} />
         </div>
       </div>
@@ -127,7 +126,7 @@ function ParticleBackground() {
   return <canvas ref={canvasRef} className="bs-particles" />;
 }
 
-function TrafficPanel({ data }: { data: number[] }) {
+function TrafficPanel({ data, viewMode }: { data: number[]; viewMode: string }) {
   const chartRef = useRef<HTMLDivElement>(null);
   const instanceRef = useRef<echarts.ECharts | null>(null);
 
@@ -186,9 +185,11 @@ function TrafficPanel({ data }: { data: number[] }) {
     });
   }, [data]);
 
+  const modeMap: Record<string, string> = { global: '实时数据流量', region: '区域通信负载', device: '设备数据吞吐' };
+
   return (
     <div className="glass-panel bs-panel bs-traffic-panel">
-      <div className="bs-panel-title">实时数据流量</div>
+      <div className="bs-panel-title">{modeMap[viewMode] || '实时数据流量'}</div>
       <div className="bs-traffic-summary">
         <span className="bs-traffic-value">{data[data.length - 1] || 0}<span className="bs-traffic-unit">Mbps</span></span>
         <span className="bs-traffic-peak">峰值 {Math.max(...data)}</span>
@@ -199,29 +200,117 @@ function TrafficPanel({ data }: { data: number[] }) {
 }
 
 const STAT_COLORS = ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b'];
-const STAT_TRENDS = [2.3, 0, 5.1, -1.2];
 
-function StatsCards({ stats }: { stats: { label: string; value: number; unit: string }[] }) {
-  return (
-    <div className="bs-stats-grid">
-      {stats.map((s, i) => (
-        <div key={s.label} className="glass-panel bs-stat-card" style={{ borderLeftColor: STAT_COLORS[i] }}>
-          <div className="bs-stat-header">
-            <span className="bs-stat-label">{s.label}</span>
-            {STAT_TRENDS[i] !== 0 && (
-              <span className={`bs-stat-trend ${STAT_TRENDS[i] > 0 ? 'up' : 'down'}`}>
-                {STAT_TRENDS[i] > 0 ? '▲' : '▼'}{Math.abs(STAT_TRENDS[i])}%
-              </span>
-            )}
-          </div>
-          <div className="bs-stat-value" key={`${s.label}-${s.value}`}>
-            {s.value}<span className="bs-stat-unit">{s.unit}</span>
-          </div>
-          <div className="bs-stat-bar" style={{ width: `${Math.min(s.value, 100)}%`, background: STAT_COLORS[i] }} />
+function ModeParamsPanel({ viewMode, health, stats, alerts }: {
+  viewMode: string; health: { name: string; score: number }[];
+  stats: { label: string; value: number; unit: string }[]; alerts: { time: string; level: string; msg: string }[];
+}) {
+  if (viewMode === 'global') {
+    const dims = health.slice(0, 8);
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div className="bs-stats-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+          {stats.map((s, i) => (
+            <div key={s.label} className="glass-panel bs-stat-card" style={{ borderLeftColor: STAT_COLORS[i], padding: '8px 10px' }}>
+              <div className="bs-stat-header">
+                <span className="bs-stat-label" style={{ fontSize: 10 }}>{s.label}</span>
+              </div>
+              <div className="bs-stat-value" style={{ fontSize: 18 }}>
+                {s.value}<span className="bs-stat-unit">{s.unit}</span>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  );
+        <div style={{ fontSize: 10, fontWeight: 700, color: '#c0d0e0', letterSpacing: '0.05em', marginTop: 2 }}>
+          健康维度评分
+        </div>
+        {dims.map((d) => (
+          <div key={d.name} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 10, color: '#8a9bb5', width: 72, flexShrink: 0, textAlign: 'right' }}>{d.name}</span>
+            <div style={{ flex: 1, height: 4, borderRadius: 2, background: 'rgba(15,40,71,0.5)', overflow: 'hidden' }}>
+              <div style={{
+                width: `${d.score}%`, height: '100%', borderRadius: 2,
+                background: d.score > 80 ? '#22c55e' : d.score > 60 ? '#f59e0b' : '#ef4444',
+                transition: 'width 0.5s ease',
+              }} />
+            </div>
+            <span style={{ fontSize: 10, fontFamily: 'var(--font-mono)', fontWeight: 700, color: d.score > 80 ? '#22c55e' : d.score > 60 ? '#fbbf24' : '#f87171', width: 28, textAlign: 'right' }}>{d.score}</span>
+          </div>
+        ))}
+        <div style={{ fontSize: 9, color: '#6b8ab5', padding: '2px 4px', lineHeight: 1.5 }}>
+          🏭 常熟工厂 · 2车间 · 5产线 · 10工位 · 15气缸
+        </div>
+      </div>
+    );
+  }
+
+  if (viewMode === 'region') {
+    const regions = [
+      { name: '华东', health: 85, avail: 92, fault: 12, mtbf: 320 },
+      { name: '华南', health: 72, avail: 88, fault: 25, mtbf: 180 },
+      { name: '华北', health: 91, avail: 95, fault: 8, mtbf: 410 },
+    ];
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: '#c0d0e0', letterSpacing: '0.05em' }}>区域 KPI 排名</div>
+        {regions.map((r, i) => (
+          <div key={r.name} className="glass-panel" style={{ padding: '10px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderLeft: `3px solid ${STAT_COLORS[i]}` }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: '#eef5ff' }}>{r.name}</span>
+            <div style={{ display: 'flex', gap: 12, fontSize: 10, fontFamily: 'var(--font-mono)', color: '#8a9bb5' }}>
+              <span>健康 {r.health}%</span>
+              <span>稼动 {r.avail}%</span>
+              <span>MTBF {r.mtbf}h</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (viewMode === 'device') {
+    const devices = [
+      { type: '夹爪气缸', count: 25, avgHealth: 72, minH: 38, maxH: 95, color: '#3b82f6' },
+      { type: '推送气缸', count: 20, avgHealth: 68, minH: 42, maxH: 91, color: '#8b5cf6' },
+      { type: '升降气缸', count: 18, avgHealth: 55, minH: 28, maxH: 88, color: '#10b981' },
+      { type: '旋转气缸', count: 17, avgHealth: 81, minH: 55, maxH: 96, color: '#f59e0b' },
+    ];
+    const criticalCount = alerts.filter(a => a.level === 'critical').length;
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: '#c0d0e0', letterSpacing: '0.05em' }}>设备类型概览</div>
+        {devices.map((d) => (
+          <div key={d.type} className="glass-panel" style={{ padding: '10px 12px', borderLeft: `3px solid ${d.color}` }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#eef5ff' }}>{d.type}</span>
+              <span style={{ fontSize: 9, color: '#6b8ab5' }}>{d.count} 台</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 18, fontFamily: 'var(--font-mono)', fontWeight: 700, color: d.avgHealth > 70 ? '#22c55e' : '#f59e0b' }}>{d.avgHealth}</span>
+              <span style={{ fontSize: 9, color: '#6b8ab5' }}>均分</span>
+              <div style={{ flex: 1, height: 3, borderRadius: 2, background: 'rgba(15,40,71,0.5)', overflow: 'hidden' }}>
+                <div style={{ width: `${d.avgHealth}%`, height: '100%', borderRadius: 2, background: d.color, opacity: 0.6 }} />
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 12, marginTop: 4, fontSize: 9, color: '#6b8ab5' }}>
+              <span>最低 <span style={{ color: '#f87171' }}>{d.minH}</span></span>
+              <span>最高 <span style={{ color: '#22c55e' }}>{d.maxH}</span></span>
+              <span>范围 {d.maxH - d.minH}</span>
+            </div>
+          </div>
+        ))}
+        {criticalCount > 0 && (
+          <div style={{ fontSize: 10, color: '#ef4444', padding: '6px 10px', background: 'rgba(239,68,68,0.08)', borderRadius: 6, border: '1px solid rgba(239,68,68,0.2)' }}>
+            ⚠️ {criticalCount} 台设备健康度低于 40%（紧急关注）
+          </div>
+        )}
+        <div style={{ fontSize: 9, color: '#6b8ab5', padding: '4px 6px', lineHeight: 1.5 }}>
+          📐 3D散点轴: X=温度°C | Y=压力kPa | Z=健康度%
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 const HUD_LABELS: Record<string, string> = {
@@ -306,36 +395,63 @@ function applyOption(chart: echarts.ECharts, viewMode: string) {
 }
 
 function getNetworkTopologyOption(): any {
-  const LINE_COLORS: Record<string, string> = {
-    'LINE-A': '#3b82f6',
-    'LINE-B': '#8b5cf6',
-    'LINE-C': '#10b981',
-    'LINE-D': '#f59e0b',
-  };
+  const C_BLUE   = '#3b82f6';
+  const C_PURPLE = '#8b5cf6';
+  const C_GREEN  = '#10b981';
+  const C_AMBER  = '#f59e0b';
+  const C_CYAN   = '#06b6d4';
 
+  // ===== 厂区 → 车间 → 产线 → 工位 → 气缸 五级拓扑 =====
+
+  // 工厂根节点
+  const FACTORY = { id: 'FACTORY', name: '🏭 常熟离散制造工厂', x: 370, y: -30 };
+
+  // 车间（2个）
+  const WORKSHOPS = [
+    { id: 'WS-A', name: '冲压注塑车间', x: 250, y: 10 },
+    { id: 'WS-B', name: '装配包装车间', x: 520, y: 10 },
+  ];
+
+  // 产线（5条，分属2个车间）
   const LINES = [
-    { id: 'LINE-A', name: '装配一线', y: 80 },
-    { id: 'LINE-B', name: '压装二线', y: 200 },
-    { id: 'LINE-C', name: '检测封装线', y: 320 },
-    { id: 'LINE-D', name: '上料单元', y: 440 },
+    { id: 'LINE-A', name: '冲压一线',   workshop: 'WS-A', y: 80,  color: C_BLUE },
+    { id: 'LINE-B', name: '注塑二线',   workshop: 'WS-A', y: 170, color: C_PURPLE },
+    { id: 'LINE-C', name: '检测封装线', workshop: 'WS-A', y: 260, color: C_GREEN },
+    { id: 'LINE-D', name: '装配一线',   workshop: 'WS-B', y: 350, color: C_AMBER },
+    { id: 'LINE-E', name: '包装码垛线', workshop: 'WS-B', y: 440, color: C_CYAN },
   ];
 
+  // 工位（10个）
   const STATIONS = [
-    { id: 'ST-01', name: '夹爪专机', line: 'LINE-A', x: 250 },
-    { id: 'ST-02', name: '推送工位', line: 'LINE-A', x: 450 },
-    { id: 'ST-03', name: '压装机构', line: 'LINE-B', x: 350 },
-    { id: 'ST-04', name: '检测转台', line: 'LINE-C', x: 250 },
-    { id: 'ST-05', name: '封装测试', line: 'LINE-C', x: 450 },
-    { id: 'ST-06', name: '上料单元', line: 'LINE-D', x: 350 },
+    { id: 'ST-01', name: '冲压工位', line: 'LINE-A', x: 190 },
+    { id: 'ST-02', name: '焊接工位', line: 'LINE-A', x: 430 },
+    { id: 'ST-03', name: '压装机构', line: 'LINE-B', x: 200 },
+    { id: 'ST-04', name: '注塑成型', line: 'LINE-B', x: 430 },
+    { id: 'ST-05', name: '检测转台', line: 'LINE-C', x: 200 },
+    { id: 'ST-06', name: '封装测试', line: 'LINE-C', x: 430 },
+    { id: 'ST-07', name: '夹爪专机', line: 'LINE-D', x: 200 },
+    { id: 'ST-08', name: '推送工位', line: 'LINE-D', x: 430 },
+    { id: 'ST-09', name: '包装工位', line: 'LINE-E', x: 200 },
+    { id: 'ST-10', name: '码垛机器人', line: 'LINE-E', x: 430 },
   ];
 
+  // 气缸（15个）
   const CYLINDERS = [
-    { id: 'CYL-A01', name: '夹爪缩回', station: 'ST-01', health: 68, alert: 'warning' },
-    { id: 'CYL-A02', name: '推送伸出', station: 'ST-02', health: 93, alert: 'normal' },
-    { id: 'CYL-B01', name: '升降复位', station: 'ST-03', health: 41, alert: 'critical' },
-    { id: 'CYL-C01', name: '旋转到位', station: 'ST-04', health: 76, alert: 'normal' },
-    { id: 'CYL-C02', name: '封口压紧', station: 'ST-05', health: 89, alert: 'normal' },
-    { id: 'CYL-D01', name: '上料推出', station: 'ST-06', health: 82, alert: 'normal' },
+    { id: 'CYL-01', name: '冲压主缸',     station: 'ST-01', health: 55, alert: 'warning' },
+    { id: 'CYL-02', name: '冲压复位缸',   station: 'ST-01', health: 82, alert: 'normal' },
+    { id: 'CYL-03', name: '焊接夹紧缸',   station: 'ST-02', health: 68, alert: 'warning' },
+    { id: 'CYL-04', name: '升降复位缸',   station: 'ST-03', health: 28, alert: 'critical' },
+    { id: 'CYL-05', name: '压装下压缸',   station: 'ST-03', health: 88, alert: 'normal' },
+    { id: 'CYL-06', name: '注塑顶出缸',   station: 'ST-04', health: 76, alert: 'normal' },
+    { id: 'CYL-07', name: '旋转到位缸',   station: 'ST-05', health: 45, alert: 'warning' },
+    { id: 'CYL-08', name: '检测升降缸',   station: 'ST-05', health: 91, alert: 'normal' },
+    { id: 'CYL-09', name: '封口压紧缸',   station: 'ST-06', health: 89, alert: 'normal' },
+    { id: 'CYL-10', name: '夹爪缩回缸',   station: 'ST-07', health: 68, alert: 'warning' },
+    { id: 'CYL-11', name: '夹爪旋转缸',   station: 'ST-07', health: 93, alert: 'normal' },
+    { id: 'CYL-12', name: '推送伸出缸',   station: 'ST-08', health: 71, alert: 'warning' },
+    { id: 'CYL-13', name: '上料举升缸',   station: 'ST-08', health: 37, alert: 'critical' },
+    { id: 'CYL-14', name: '包装压合缸',   station: 'ST-09', health: 73, alert: 'normal' },
+    { id: 'CYL-15', name: '码垛伸缩缸',   station: 'ST-10', health: 61, alert: 'warning' },
   ];
 
   function healthColor(score: number): string {
@@ -344,107 +460,159 @@ function getNetworkTopologyOption(): any {
     return '#ef4444';
   }
 
-  const categories = LINES.map((l) => ({ name: l.name, itemStyle: { color: LINE_COLORS[l.id] } }));
+  const lineColors: Record<string, string> = {};
+  LINES.forEach(l => { lineColors[l.id] = l.color; });
+  const LINE_IDS = LINES.map(l => l.id);
+  const categories = LINES.map((l) => ({ name: l.name, itemStyle: { color: l.color } }));
 
   const nodes: any[] = [];
   const links: any[] = [];
+  const lineIdxMap: Record<string, number> = {};
+  LINES.forEach((l, i) => { lineIdxMap[l.id] = i; });
 
-  LINES.forEach((line, lineIdx) => {
+  // ---- 工厂根节点 ----
+  nodes.push({
+    id: FACTORY.id,
+    name: FACTORY.name,
+    x: FACTORY.x, y: FACTORY.y,
+    symbolSize: [180, 36],
+    symbol: 'roundRect',
+    itemStyle: { color: '#0f2847', borderColor: '#3b82f6', borderWidth: 2, opacity: 0.95 },
+    label: { show: true, color: '#eef5ff', fontSize: 12, fontWeight: 'bold' },
+  });
+
+  // ---- 车间节点 ----
+  WORKSHOPS.forEach(ws => {
     nodes.push({
-      id: line.id,
-      name: line.name,
-      x: 80,
-      y: line.y,
-      symbolSize: [60, 24],
+      id: ws.id,
+      name: ws.name,
+      x: ws.x, y: ws.y,
+      symbolSize: [120, 30],
       symbol: 'roundRect',
-      category: lineIdx,
-      itemStyle: { color: LINE_COLORS[line.id], borderColor: LINE_COLORS[line.id], borderWidth: 2, opacity: 0.9 },
-      label: { show: true, color: '#eef5ff', fontSize: 11, fontWeight: 'bold' },
+      itemStyle: { color: '#0a1e35', borderColor: '#8b5cf6', borderWidth: 1.5, opacity: 0.9 },
+      label: { show: true, color: '#c0d4e8', fontSize: 11, fontWeight: 'bold' },
+    });
+    links.push({
+      source: FACTORY.id, target: ws.id,
+      lineStyle: { color: '#1e4a6f', width: 2, opacity: 0.6, type: 'solid' },
+      symbol: ['none', 'arrow'], symbolSize: [0, 10],
     });
   });
 
-  STATIONS.forEach((station) => {
-    const line = LINES.find((l) => l.id === station.line)!;
-    const lineIdx = LINES.indexOf(line);
+  // ---- 产线节点 ----
+  LINES.forEach(line => {
+    const ws = WORKSHOPS.find(w => w.id === line.workshop)!;
+    nodes.push({
+      id: line.id,
+      name: line.name,
+      x: ws.x,
+      y: line.y,
+      symbolSize: [90, 26],
+      symbol: 'roundRect',
+      category: lineIdxMap[line.id],
+      itemStyle: { color: line.color, borderColor: line.color, borderWidth: 2, opacity: 0.9 },
+      label: { show: true, color: '#eef5ff', fontSize: 11, fontWeight: 'bold' },
+    });
+    links.push({
+      source: line.workshop, target: line.id,
+      lineStyle: { color: line.color, width: 2, opacity: 0.45, type: 'dashed' },
+    });
+  });
+
+  // ---- 工位节点 ----
+  STATIONS.forEach(station => {
+    const line = LINES.find(l => l.id === station.line)!;
     nodes.push({
       id: station.id,
       name: station.name,
       x: station.x,
       y: line.y,
       symbolSize: 30,
-      category: lineIdx,
-      itemStyle: { color: LINE_COLORS[station.line], opacity: 0.85, borderColor: 'rgba(255,255,255,0.15)', borderWidth: 1 },
-      label: { show: true, position: 'bottom', color: '#c0d4e8', fontSize: 10, distance: 8 },
+      symbol: 'circle',
+      category: lineIdxMap[station.line],
+      itemStyle: { color: line.color, opacity: 0.8, borderColor: 'rgba(255,255,255,0.2)', borderWidth: 1.5 },
+      label: { show: true, position: 'bottom', color: '#c0d4e8', fontSize: 10, fontWeight: 'bold' as const, distance: 6 },
     });
     links.push({
-      source: station.line,
-      target: station.id,
-      lineStyle: { color: LINE_COLORS[station.line], width: 2, opacity: 0.5, type: 'dashed' },
+      source: station.line, target: station.id,
+      lineStyle: { color: line.color, width: 2, opacity: 0.5, type: 'dashed' },
     });
   });
 
+  // ---- 产线内物料流 ----
   const lineStations: Record<string, string[]> = {};
-  STATIONS.forEach((s) => {
+  STATIONS.forEach(s => {
     if (!lineStations[s.line]) lineStations[s.line] = [];
     lineStations[s.line].push(s.id);
   });
-  Object.values(lineStations).forEach((stationIds) => {
-    for (let i = 0; i < stationIds.length - 1; i++) {
-      const srcLine = STATIONS.find((s) => s.id === stationIds[i])!.line;
+  Object.entries(lineStations).forEach(([lid, sids]) => {
+    for (let i = 0; i < sids.length - 1; i++) {
       links.push({
-        source: stationIds[i],
-        target: stationIds[i + 1],
-        lineStyle: { color: LINE_COLORS[srcLine], width: 3, type: 'solid', opacity: 0.8 },
-        symbol: ['none', 'arrow'],
-        symbolSize: [0, 12],
+        source: sids[i], target: sids[i + 1],
+        lineStyle: { color: lineColors[lid], width: 3, type: 'solid', opacity: 0.7 },
+        symbol: ['none', 'arrow'], symbolSize: [0, 14],
       });
     }
   });
 
-  LINES.forEach((lineA, i) => {
-    if (i < LINES.length - 1) {
-      const lineB = LINES[i + 1];
-      const stationsA = STATIONS.filter((s) => s.line === lineA.id);
-      const stationsB = STATIONS.filter((s) => s.line === lineB.id);
-      if (stationsA.length > 0 && stationsB.length > 0) {
+  // ---- 车间内产线间流转 ----
+  WORKSHOPS.forEach(ws => {
+    const wsLines = LINES.filter(l => l.workshop === ws.id);
+    for (let i = 0; i < wsLines.length - 1; i++) {
+      const a = lineStations[wsLines[i].id]?.slice(-1)[0];
+      const b = lineStations[wsLines[i + 1].id]?.[0];
+      if (a && b) {
         links.push({
-          source: stationsA[stationsA.length - 1].id,
-          target: stationsB[0].id,
-          lineStyle: { color: '#1e4a6f', width: 1.5, type: 'dotted', opacity: 0.4, curveness: 0.3 },
-          symbol: ['none', 'arrow'],
-          symbolSize: [0, 8],
+          source: a, target: b,
+          lineStyle: { color: '#1e4a6f', width: 1.5, type: 'dotted', opacity: 0.5, curveness: 0.3 },
+          symbol: ['none', 'arrow'], symbolSize: [0, 8],
         });
       }
     }
   });
 
-  CYLINDERS.forEach((cyl) => {
-    const station = STATIONS.find((s) => s.id === cyl.station)!;
-    const line = LINES.find((l) => l.id === station.line)!;
-    const lineIdx = LINES.indexOf(line);
+  // ---- 车间间流转 ----
+  (() => {
+    const wsAStations = STATIONS.filter(s => LINES.find(l => l.id === s.line)?.workshop === 'WS-A');
+    const wsBStations = STATIONS.filter(s => LINES.find(l => l.id === s.line)?.workshop === 'WS-B');
+    if (wsAStations.length && wsBStations.length) {
+      links.push({
+        source: wsAStations[wsAStations.length - 1].id,
+        target: wsBStations[0].id,
+        lineStyle: { color: '#3b82f6', width: 2, type: 'dotted', opacity: 0.5, curveness: 0.3 },
+        symbol: ['none', 'arrow'], symbolSize: [0, 12],
+      });
+    }
+  })();
+
+  // ---- 气缸执行单元 ----
+  CYLINDERS.forEach(cyl => {
+    const station = STATIONS.find(s => s.id === cyl.station)!;
+    const line = LINES.find(l => l.id === station.line)!;
     const color = healthColor(cyl.health);
     const isCritical = cyl.alert === 'critical';
+    const cylsAtStation = CYLINDERS.filter(c => c.station === cyl.station);
+    const cylIdx = cylsAtStation.indexOf(cyl);
+    const yOff = cylsAtStation.length === 1 ? 36 : (cylIdx * 28 + 22);
 
     nodes.push({
       id: cyl.id,
       name: `${cyl.name} [${cyl.health}%]`,
-      x: station.x + 50,
-      y: line.y + 50,
+      x: station.x + 55,
+      y: line.y + yOff,
       symbolSize: isCritical ? 18 : 14,
       symbol: 'diamond',
-      category: lineIdx,
+      category: lineIdxMap[station.line],
       itemStyle: {
-        color,
-        shadowBlur: isCritical ? 20 : 0,
+        color, shadowBlur: isCritical ? 22 : 0,
         shadowColor: isCritical ? 'rgba(239,68,68,0.9)' : undefined,
         borderColor: isCritical ? '#ef4444' : 'rgba(255,255,255,0.1)',
         borderWidth: isCritical ? 2 : 1,
       },
-      label: { show: true, position: 'right', color: '#6b8ab5', fontSize: 9, distance: 4 },
+      label: { show: true, position: 'right', color: '#6b8ab5', fontSize: 9, fontWeight: 'bold' as const, distance: 4 },
     });
     links.push({
-      source: cyl.station,
-      target: cyl.id,
+      source: cyl.station, target: cyl.id,
       lineStyle: { color: '#0f2847', width: 1, type: 'dashed', opacity: 0.4 },
     });
   });
@@ -458,8 +626,18 @@ function getNetworkTopologyOption(): any {
       textStyle: { color: '#eef5ff', fontSize: 11 },
       formatter: (params: any) => {
         if (params.dataType === 'node') {
-          const cyl = CYLINDERS.find((c) => c.id === params.data.id);
-          if (cyl) return `<b>${cyl.name}</b><br/>健康度: ${cyl.health}%<br/>状态: ${cyl.alert === 'critical' ? '⚠ 告警' : cyl.alert === 'warning' ? '预警' : '正常'}`;
+          const id = params.data.id;
+          if (id === FACTORY.id) return `<b>${FACTORY.name}</b><br/>5条产线 · 10工位 · 15气缸`;
+          const ws = WORKSHOPS.find(w => w.id === id);
+          if (ws) return `<b>${ws.name}</b><br/>${LINES.filter(l => l.workshop === ws.id).length} 条产线`;
+          const line = LINES.find(l => l.id === id);
+          if (line) {
+            const stCount = STATIONS.filter(s => s.line === id).length;
+            const cylCount = CYLINDERS.filter(c => STATIONS.find(s => s.id === c.station)?.line === id).length;
+            return `<b>${line.name}</b><br/>${stCount} 工位 · ${cylCount} 气缸`;
+          }
+          const cyl = CYLINDERS.find(c => c.id === id);
+          if (cyl) return `<b>${cyl.name}</b><br/>健康度: ${cyl.health}%<br/>状态: ${cyl.alert === 'critical' ? '⚠ 紧急' : cyl.alert === 'warning' ? '🟡 预警' : '✅ 正常'}`;
           return `<b>${params.name}</b>`;
         }
         return '';
@@ -480,6 +658,7 @@ function getNetworkTopologyOption(): any {
         type: 'graph',
         layout: 'none',
         roam: true,
+        scaleLimit: { min: 0.6, max: 2.5 },
         categories,
         data: nodes,
         links,
@@ -487,7 +666,7 @@ function getNetworkTopologyOption(): any {
         right: 0,
         top: 30,
         bottom: 10,
-        lineStyle: { curveness: 0.05 },
+        lineStyle: { curveness: 0.08 },
         edgeSymbol: ['none', 'arrow'],
         edgeSymbolSize: [0, 8],
         emphasis: {
@@ -772,7 +951,7 @@ function getScatter3DOption(): any {
   };
 }
 
-function AssetHealthPanel({ health }: { health: { name: string; score: number }[] }) {
+function AssetHealthPanel({ health, viewMode }: { health: { name: string; score: number }[]; viewMode: string }) {
   const chartRef = useRef<HTMLDivElement>(null);
   const instanceRef = useRef<echarts.ECharts | null>(null);
 
@@ -788,57 +967,136 @@ function AssetHealthPanel({ health }: { health: { name: string; score: number }[
   useEffect(() => {
     const chart = instanceRef.current;
     if (!chart) return;
-    const avgScore = Math.round(health.reduce((a, h) => a + h.score, 0) / health.length);
-    chart.setOption({
-      radar: {
-        indicator: health.map((h) => ({ name: h.name, max: 100 })),
-        radius: '60%',
-        center: ['50%', '55%'],
-        axisLine: { lineStyle: { color: 'rgba(15,40,71,0.6)' } },
-        splitLine: { lineStyle: { color: 'rgba(15,40,71,0.4)' } },
-        splitArea: { areaStyle: { color: ['rgba(59,130,246,0.02)', 'rgba(59,130,246,0.04)', 'rgba(59,130,246,0.06)'] } },
-        axisName: { color: '#c0d4e8', fontSize: 10, fontWeight: 'bold' },
-      },
-      series: [{
-        type: 'radar',
-        data: [
-          {
-            value: health.map((h) => h.score),
-            name: '当前健康度',
-            areaStyle: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: 'rgba(59,130,246,0.35)' },
-                { offset: 1, color: 'rgba(59,130,246,0.05)' },
-              ]),
+
+    if (viewMode === 'global') {
+      // ===== 全局：8维度综合资产健康 =====
+      const indicators = health.map(h => ({ name: h.name, max: 100 }));
+      chart.setOption({
+        radar: {
+          indicator: indicators,
+          radius: '62%', center: ['50%', '52%'],
+          axisLine: { lineStyle: { color: 'rgba(15,40,71,0.6)' } },
+          splitLine: { lineStyle: { color: 'rgba(15,40,71,0.4)' } },
+          splitArea: { areaStyle: { color: ['rgba(59,130,246,0.02)','rgba(59,130,246,0.04)','rgba(59,130,246,0.06)'] } },
+          axisName: { color: '#c0d4e8', fontSize: 9, fontWeight: 'bold' },
+          shape: 'circle',
+        },
+        series: [{
+          type: 'radar',
+          data: [
+            { value: health.map(h => h.score), name: '资产健康',
+              areaStyle: { color: 'rgba(59,130,246,0.2)' },
+              lineStyle: { color: '#3b82f6', width: 2.5 },
+              itemStyle: { color: '#3b82f6' }, symbol: 'circle', symbolSize: 5,
             },
-            lineStyle: { color: '#3b82f6', width: 2.5, shadowBlur: 6, shadowColor: 'rgba(59,130,246,0.4)' },
-            itemStyle: { color: '#3b82f6', borderColor: '#fff', borderWidth: 1.5 },
-            symbol: 'circle',
-            symbolSize: 6,
+            { value: [85,85,85,85,85,85,85,85], name: '目标线',
+              areaStyle: { color: 'transparent' },
+              lineStyle: { color: '#22c55e', width: 1, type: 'dashed', opacity: 0.4 },
+              itemStyle: { opacity: 0 }, symbol: 'none',
+            },
+          ],
+        }],
+      }, true);
+    } else if (viewMode === 'region') {
+      // ===== 区域：5区域 × 4指标对比雷达 =====
+      chart.setOption({
+        radar: {
+          indicator: [
+            { name: '健康度', max: 100 }, { name: '稼动率', max: 100 },
+            { name: '故障率↓', max: 50 }, { name: 'MTBF', max: 500 },
+          ],
+          radius: '58%', center: ['50%', '52%'],
+          axisLine: { lineStyle: { color: 'rgba(15,40,71,0.6)' } },
+          splitLine: { lineStyle: { color: 'rgba(15,40,71,0.4)' } },
+          axisName: { color: '#c0d4e8', fontSize: 10, fontWeight: 'bold' },
+          shape: 'polygon',
+        },
+        series: [
+          { type: 'radar', name: '华东',
+            data: [{ value: [85, 92, 12, 320], name: '华东' }],
+            areaStyle: { color: 'rgba(59,130,246,0.12)' },
+            lineStyle: { color: '#3b82f6', width: 2 }, itemStyle: { color: '#3b82f6' }, symbol: 'circle', symbolSize: 6,
           },
-          {
-            value: health.map(() => 80),
-            name: '达标线',
-            areaStyle: { color: 'transparent' },
-            lineStyle: { color: '#22c55e', width: 1, type: 'dashed', opacity: 0.5 },
-            itemStyle: { opacity: 0 },
-            symbol: 'none',
+          { type: 'radar', name: '华南',
+            data: [{ value: [72, 88, 25, 180], name: '华南' }],
+            areaStyle: { color: 'rgba(245,158,11,0.12)' },
+            lineStyle: { color: '#f59e0b', width: 2 }, itemStyle: { color: '#f59e0b' }, symbol: 'diamond', symbolSize: 6,
+          },
+          { type: 'radar', name: '华北',
+            data: [{ value: [91, 95, 8, 410], name: '华北' }],
+            areaStyle: { color: 'rgba(16,185,129,0.12)' },
+            lineStyle: { color: '#10b981', width: 2 }, itemStyle: { color: '#10b981' }, symbol: 'triangle', symbolSize: 7,
           },
         ],
-      }],
-    });
-  }, [health]);
+        legend: {
+          data: ['华东', '华南', '华北'], bottom: 0,
+          textStyle: { color: '#8a9bb5', fontSize: 10 },
+          itemWidth: 12, itemHeight: 8,
+        },
+      }, true);
+    } else {
+      // ===== 设备：4设备类型健康对比雷达 =====
+      chart.setOption({
+        radar: {
+          indicator: [
+            { name: '健康度', max: 100 }, { name: '精度', max: 100 },
+            { name: '温度', max: 100 }, { name: '压力', max: 100 },
+            { name: '振动', max: 50 }, { name: 'MTBF', max: 500 },
+          ],
+          radius: '58%', center: ['50%', '52%'],
+          axisLine: { lineStyle: { color: 'rgba(15,40,71,0.6)' } },
+          splitLine: { lineStyle: { color: 'rgba(15,40,71,0.4)' } },
+          axisName: { color: '#c0d4e8', fontSize: 10, fontWeight: 'bold' },
+          shape: 'polygon',
+        },
+        series: [
+          { type: 'radar', name: '夹爪',
+            data: [{ value: [72, 85, 62, 78, 18, 350], name: '夹爪' }],
+            areaStyle: { color: 'rgba(59,130,246,0.12)' },
+            lineStyle: { color: '#3b82f6', width: 2 }, itemStyle: { color: '#3b82f6' }, symbol: 'circle', symbolSize: 5,
+          },
+          { type: 'radar', name: '推送',
+            data: [{ value: [68, 78, 71, 65, 28, 240], name: '推送' }],
+            areaStyle: { color: 'rgba(139,92,246,0.12)' },
+            lineStyle: { color: '#8b5cf6', width: 2 }, itemStyle: { color: '#8b5cf6' }, symbol: 'diamond', symbolSize: 5,
+          },
+          { type: 'radar', name: '升降',
+            data: [{ value: [55, 70, 85, 58, 35, 180], name: '升降' }],
+            areaStyle: { color: 'rgba(245,158,11,0.12)' },
+            lineStyle: { color: '#f59e0b', width: 2 }, itemStyle: { color: '#f59e0b' }, symbol: 'triangle', symbolSize: 6,
+          },
+          { type: 'radar', name: '旋转',
+            data: [{ value: [81, 90, 55, 72, 12, 420], name: '旋转' }],
+            areaStyle: { color: 'rgba(16,185,129,0.12)' },
+            lineStyle: { color: '#10b981', width: 2 }, itemStyle: { color: '#10b981' }, symbol: 'circle', symbolSize: 5,
+          },
+        ],
+        legend: {
+          data: ['夹爪', '推送', '升降', '旋转'], bottom: 0,
+          textStyle: { color: '#8a9bb5', fontSize: 10 },
+          itemWidth: 12, itemHeight: 8,
+        },
+      }, true);
+    }
+  }, [health, viewMode]);
 
   const avgScore = Math.round(health.reduce((a, h) => a + h.score, 0) / health.length);
+  const belowTarget = health.filter(h => h.score < 70).length;
+  const titles: Record<string, string> = { global: '全局资产健康雷达 · 8维', region: '区域健康对比 · 华东/华南/华北', device: '设备类型对比 · 4类气缸' };
 
   return (
     <div className="glass-panel bs-panel bs-health-panel">
-      <div className="bs-panel-title">资产健康度</div>
+      <div className="bs-panel-title">{titles[viewMode] || titles.global}</div>
       <div className="bs-health-summary">
         <span className="bs-health-score">{avgScore}<span className="bs-health-suffix">/100</span></span>
-        <span className="bs-health-label">综合评分</span>
+        <span className="bs-health-label">
+          {viewMode === 'global' ? `综合评分` : viewMode === 'region' ? `区域均值` : `设备均值`}
+          {viewMode === 'global' && belowTarget > 0 && (
+            <span style={{ color: '#ef4444', marginLeft: 8, fontSize: 10 }}>{belowTarget} 项低于目标</span>
+          )}
+        </span>
       </div>
-      <div ref={chartRef} style={{ width: '100%', height: 170 }} />
+      <div ref={chartRef} style={{ width: '100%', height: viewMode === 'global' ? 210 : 190 }} />
     </div>
   );
 }

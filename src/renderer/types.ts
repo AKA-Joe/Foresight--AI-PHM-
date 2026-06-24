@@ -21,11 +21,18 @@ interface AppApi {
   getStatus(): Promise<AppStatus>;
 }
 
+interface WinApi {
+  minimize(): void;
+  maximize(): void;
+  close(): void;
+}
+
 interface PredMaintApi {
   dashboard: DashboardApi;
   chat: ChatApi;
   extension: ExtensionApi;
   app: AppApi;
+  window: WinApi;
 }
 
 declare global {

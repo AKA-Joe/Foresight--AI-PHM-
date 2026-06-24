@@ -1,7 +1,7 @@
 {
   "name": "ai-predictive-maintenance-demo",
   "version": "2.0.0",
-  "description": "非标设备 5G+AI 预测性维护演示平台 — Electron + LLM + 数字孪生 + 浏览器插件",
+  "description": "明鉴——AI+设备预测性维护平台 — Electron + LLM + 数字孪生 + 浏览器插件",
   "author": "项目组",
   "license": "MIT",
   "main": "out/main/index.js",
@@ -23,6 +23,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "zod": "^3.24.0"
   },
   "devDependencies": {
@@ -38,7 +39,7 @@
   },
   "build": {
     "appId": "com.telecom.ai-predictive-maintenance",
-    "productName": "AI预测性维护演示平台",
+    "productName": "明鉴——AI+设备预测性维护平台",
     "electronDist": "node_modules/electron/dist",
     "directories": {
       "output": "release/${version}"
@@ -70,7 +71,8 @@
           ]
         }
       ],
-      "artifactName": "${productName}-${version}-Setup.${ext}"
+      "artifactName": "${productName}-${version}-Setup.${ext}",
+      "icon": "assets/icon.png"
     },
     "mac": {
       "target": [
@@ -87,8 +89,16 @@
     },
     "dmg": {
       "contents": [
-        { "x": 130, "y": 220 },
-        { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
       ]
     },
     "nsis": {
